@@ -1,0 +1,18 @@
+{
+  "runtimeOptions": {
+    "tfm": "net5.0",
+    "framework": {
+      "name": "Microsoft.WindowsDesktop.App",
+      "version": "5.0.0"
+    },
+    "additionalProbingPaths": [
+      "E:\\Users\\polur\\.dotnet\\store\\|arch|\\|tfm|",
+      "E:\\Users\\polur\\.nuget\\packages",
+      "E:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet",
+      "E:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+    ],
+    "configProperties": {
+      "Microsoft.NETCore.DotNetHostPolicy.SetAppPaths": true
+    }
+  }
+}

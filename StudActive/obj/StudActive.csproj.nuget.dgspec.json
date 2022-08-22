@@ -1,0 +1,86 @@
+{
+  "format": 1,
+  "restore": {
+    "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\StudActive.csproj": {}
+  },
+  "projects": {
+    "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\StudActive.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\StudActive.csproj",
+        "projectName": "StudActive",
+        "projectPath": "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\StudActive.csproj",
+        "packagesPath": "E:\\Users\\polur\\.nuget\\packages\\",
+        "outputPath": "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "E:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\",
+          "E:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "E:\\Users\\polur\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "E:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "E:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0-windows7.0"
+        ],
+        "sources": {
+          "E:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0-windows7.0": {
+            "targetAlias": "net5.0-windows",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0-windows7.0": {
+          "targetAlias": "net5.0-windows",
+          "dependencies": {
+            "MaterialDesignThemes": {
+              "target": "Package",
+              "version": "[4.5.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WPF": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "E:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

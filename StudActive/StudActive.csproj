@@ -1,0 +1,117 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <Win32Resource />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Content\favicon.ico" />
+    <None Remove="Content\HumburgerIcons\add_duty_list.png" />
+    <None Remove="Content\HumburgerIcons\dark_mode.png" />
+    <None Remove="Content\HumburgerIcons\duty_list.png" />
+    <None Remove="Content\HumburgerIcons\hamburger.png" />
+    <None Remove="Content\HumburgerIcons\inventory.png" />
+    <None Remove="Content\HumburgerIcons\personal_area.png" />
+    <None Remove="Content\HumburgerIcons\settings.png" />
+    <None Remove="Content\HumburgerIcons\students.png" />
+    <None Remove="Content\IconButtons\add.png" />
+    <None Remove="Content\IconButtons\add_user.png" />
+    <None Remove="Content\IconButtons\close.png" />
+    <None Remove="Content\IconButtons\max.png" />
+    <None Remove="Content\IconButtons\min.png" />
+    <None Remove="Content\IconButtons\question.png" />
+    <None Remove="Content\IconButtons\refresh.png" />
+    <None Remove="Content\IconButtons\restore.png" />
+    <None Remove="Content\SUSU.png" />
+    <None Remove="Content\SUSUlogo.png" />
+    <None Remove="Content\SUSUlogo_EN.png" />
+    <None Remove="Content\susu_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Content\HumburgerIcons\add_duty_list.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\HumburgerIcons\dark_mode.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\HumburgerIcons\duty_list.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\HumburgerIcons\hamburger.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\HumburgerIcons\inventory.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\HumburgerIcons\personal_area.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\HumburgerIcons\settings.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\HumburgerIcons\students.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\IconButtons\add.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\IconButtons\add_user.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\IconButtons\close.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\IconButtons\max.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\IconButtons\question.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\IconButtons\refresh.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\IconButtons\restore.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\IconButtons\min.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\SUSU.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\SUSUlogo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\SUSUlogo_EN.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\susu_logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\Custom\CustomWindow.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+  </ItemGroup>
+
+</Project>
