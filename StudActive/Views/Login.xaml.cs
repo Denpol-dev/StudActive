@@ -57,7 +57,7 @@ namespace StudActive
                 bool checkStudActive = _accountViewModels.CheckStudActive(model);
                 if (checkStudActive)
                 {
-                    if ((account != null) && (account.Role == "Студент"))
+                    if ((account != null)/* && (account.Role == "Студент")*/)
                     {
                         myEffect.Radius = 0;
                         MainGrid.Effect = myEffect;

@@ -64,3 +64,6 @@ E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windo
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Views\MainWindow.baml
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Styles\Custom\CustomWindow.baml
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Styles\Custom\CustomWindow.g.cs
+E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\GeneratedInternalTypeHelper.g.cs
+E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Views\Pages\PersonalArea.g.cs
+E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Views\Pages\PersonalArea.baml
