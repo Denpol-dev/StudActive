@@ -30,5 +30,12 @@ namespace StudActive.Models
         public string VkLink { get; set; }
         public Guid StudentId { get; set; }
         public Guid StudentCouncilId { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public Guid GroupId { get; set; }
+        public int Sex { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public string MobilePhoneNumber { get; set; }
     }
 }

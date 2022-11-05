@@ -1,27 +1,17 @@
-﻿using StudActive.Entities;
-using StudActive.Models;
+﻿using StudActive.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Effects;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using StudActive.ViewModels;
 using System.Diagnostics;
 using System.Data;
-using System.Collections;
-using System.Text.RegularExpressions;
-using System.Security.Cryptography;
-using System.Windows.Threading;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
+using StudActive.Entities;
 
 namespace StudActive.Views
 {
@@ -30,15 +20,21 @@ namespace StudActive.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly ObservableCollection<GroupsModel> groups = new();
+
         BlurEffect myEffect = new BlurEffect();
         StudentsViewModel studentsViewModel = new StudentsViewModel();
         DutyListViewModel dutyListViewModel = new DutyListViewModel();
         AccountModel account = new AccountModel();
+
         public MainWindow()
         {
             InitializeComponent();
             MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
             MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
+
+            cbGroupName.ItemsSource = groups;
+            cbGroupNameChange.ItemsSource = groups;
         }
         public MainWindow(AccountModel accountModel) : this()
         {
@@ -51,11 +47,25 @@ namespace StudActive.Views
         /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            UserNameTextBlock.Text = account.FirstName + " " + account.MiddleName;
+            StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
+            if (account.Role == "Студент")
+            {
+                string[] Role = { "Председатель", "Зам. председателя" };
+                if (Role.Contains(userInfo.Role))
+                {
+                    StudentsStackHumburg.Visibility = Visibility.Visible;
+                    DutyListStackHumburg.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                StudentsStackHumburg.Visibility = Visibility.Visible;
+                DutyListStackHumburg.Visibility = Visibility.Visible;
+            }
 
+            UserNameTextBlock.Text = account.FirstName + " " + account.MiddleName;
             //Личный кабинет
             UserNamePersonalArea.Text = account.LastName + " " + account.FirstName + " " + account.MiddleName;
-            StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
             PhoneNumberPersonalArea.Text = userInfo.MobilePhone;
             RolePersonalArea.Text = userInfo.Role;
             VKLink.NavigateUri = new Uri(userInfo.VkLink);
@@ -63,10 +73,11 @@ namespace StudActive.Views
             CouncilName.Text = userInfo.CouncilName;
 
             //Панель студентов
-            StudActivesDataGrid.ItemsSource = studentsViewModel.GetStudentsActive(account.Id);
+            StudActivesDataGrid.ItemsSource = studentsViewModel.GetStudentsActiveIsNotArchive(account.Id);
             StudentGridReg.ItemsSource = studentsViewModel.GetAllStudents();
-            cbGroupName.ItemsSource = studentsViewModel.GetAllGroups()/*.Select(x => x.GroupName)*/;
-            cbGroupName.DisplayMemberPath = "GroupName";
+
+            studentsViewModel.GetAllGroups().ForEach(gr => groups.Add(gr));
+
             cbRoleActive.ItemsSource = studentsViewModel.GetAllRolesStudActiveModel().OrderBy(x => x.NameRU);
 
             //График дежурств
@@ -225,7 +236,26 @@ namespace StudActive.Views
         #region Панель студентов
         private void StudentsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            StudActiveGridPanel.Visibility = Visibility.Collapsed;
+            ChangeStudentActive.Visibility = Visibility.Visible;
 
+            StudentsActiveModel student = StudActivesDataGrid.SelectedItem as StudentsActiveModel;
+
+            NameStudent.Text = student.Fio;
+            string fioStr = student.Fio;
+            string[] fio = fioStr.Split(" ");
+            FirstNameChange.Text = fio[0];
+            MiddleNameChange.Text = fio[1];
+            LastNameChange.Text = fio[2];
+
+            entryDatePickerChange.SelectedDate = student.EntryDate;
+
+            VkLinkChange.Text = student.VkLink;
+
+            string mobilePhoneOld = student.MobilePhone;
+            char[] delSymb = { '(', ')', '+' };
+            string mobilePhone = mobilePhoneOld.TrimStart(delSymb);
+            PhoneNumberChange.Text = mobilePhone.Remove(0,2);
         }
 
         private void CreateStudActive_Click(object sender, RoutedEventArgs e)
@@ -242,33 +272,75 @@ namespace StudActive.Views
 
         private void Registration_Click(object sender, RoutedEventArgs e)
         {
-            List<RegistrationStudActiveModel> regModel = new List<RegistrationStudActiveModel>();
+            StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
+            RolesStudActiveModel cbRoleActiveSelected = (RolesStudActiveModel)cbRoleActive.SelectedItem;
+            Guid roleActive = cbRoleActiveSelected != null ? cbRoleActiveSelected.RoleId : Guid.Parse("356DC01F-165E-452B-BB91-BF0E0D536564");
+            GroupsModel cbGroupNameSelected = (GroupsModel)cbGroupName.SelectedItem;
+            Guid groupId = cbGroupNameSelected.GroupId;
+            Guid? studentCouncilId = studentsViewModel.GetStudentCouncilId(userInfo.Id);
+            Guid studActiveId = new Guid(StudentIdText.Text);
 
-            if (StudentIdText.Text is not null)
+            if (StudentIdText.Text is not null) //Уже есть в системе
             {
-                StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
-                RolesStudActiveModel cbRoleActiveSelected = (RolesStudActiveModel)cbRoleActive.SelectedItem;
 
-                Guid? studentCouncilId = studentsViewModel.GetStudentCouncilId(userInfo.Id);
-
-                regModel.Add(new RegistrationStudActiveModel
+                RegistrationStudActiveModel regModel = new RegistrationStudActiveModel
                 {
-                    StudentId = new Guid(StudentIdText.Text),
+                    StudActiveId = Guid.NewGuid(),
+                    EntryDate = DateTime.Today,
                     IsArchive = false,
-                    RoleActive = cbRoleActiveSelected.RoleId,
+                    RoleActive = roleActive,
                     VkLink = VkLink.Text,
-                    StudentCouncilId = account.Id
-                });
-                studentsViewModel.CreateAgainStudentActive();
-            }
-            else
-            {
-                regModel.Add(new RegistrationStudActiveModel
-                {
+                    StudentId = studActiveId,
+                    StudentCouncilId = studentCouncilId.Value,
+                    GroupId = groupId,
+                    Sex = cbSex.SelectedIndex
+                };
+                bool res = studentsViewModel.CreateAgainStudentActive(regModel);
 
-                });
-                studentsViewModel.CreateFullNewStudentActive();
+                if (res)
+                {
+                    StudentIdText.Text = null;
+                    CreateStudActiveStack.Visibility = Visibility.Collapsed;
+                    StudActiveGridPanel.Visibility = Visibility.Visible;
+                    MessageBox.Show("Регистрация успешна.");
+                }
+                else
+                {
+                    MessageBox.Show("Регистрация не удалась.", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
+            else //Новый студент
+            {
+                RegistrationStudActiveModel regModel = new RegistrationStudActiveModel
+                {
+                    StudActiveId = Guid.NewGuid(),
+                    EntryDate = DateTime.Today,
+                    IsArchive = false,
+                    RoleActive = roleActive,
+                    VkLink = VkLink.Text,
+                    StudentId = studActiveId,
+                    StudentCouncilId = studentCouncilId.Value,
+                    GroupId = groupId
+                };
+                bool res = studentsViewModel.CreateFullNewStudentActive(regModel);
+
+                if (res)
+                {
+                    StudentIdText.Text = null;
+                    CreateStudActiveStack.Visibility = Visibility.Collapsed;
+                    StudActiveGridPanel.Visibility = Visibility.Visible;
+                    MessageBox.Show("Регистрация успешна.");
+                }
+                else
+                {
+                    MessageBox.Show("Регистрация не удалась.", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+        private void ChangeStudActive_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void SelectStudent_Click(object sender, RoutedEventArgs e)
@@ -289,11 +361,10 @@ namespace StudActive.Views
                 if (context.Fio != "Пусто")
                 {
                     string[] fio = context.Fio.Split();
-                    GroupsModel group = new GroupsModel();
+                    GroupsModel group = new();
                     group.GroupId = context.GroupId;
                     group.GroupName = context.GroupNumber;
 
-                    int sex = context.Sex;
                     DateTime? birthDate = context.BirthDate;
                     string mobilePhone = context.MobilePhone;
 
@@ -307,9 +378,19 @@ namespace StudActive.Views
 
                     birthDatePicker.SelectedDate = birthDate;
 
-                    cbGroupName.Text = group.GroupName;
-
                     StudentIdText.Text = context.Id.ToString();
+
+                    groups.Add(group);
+                    cbGroupName.SelectedItem = group;
+
+                    if (context.Sex.ToString() == "1")
+                    {
+                        cbSex.SelectedIndex = 0;
+                    }
+                    else if (context.Sex.ToString() == "0")
+                    {
+                        cbSex.SelectedIndex = 1;
+                    }
                 }
                 else
                 {
@@ -421,6 +502,22 @@ namespace StudActive.Views
             BlurEffect effect = new BlurEffect();
             effect.Radius = 0;
             NewStudentStack.Effect = effect;
+        }
+
+        private void IsArchive_Checked(object sender, RoutedEventArgs e)
+        {
+            StudActivesDataGrid.ItemsSource = studentsViewModel.GetStudentsActiveIsArchiveToo(account.Id);
+        }
+
+        private void IsArchive_Unchecked(object sender, RoutedEventArgs e)
+        {
+            StudActivesDataGrid.ItemsSource = studentsViewModel.GetStudentsActiveIsNotArchive(account.Id);
+        }
+
+        private void closeChangeStudent_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeStudentActive.Visibility = Visibility.Collapsed;
+            StudActiveGridPanel.Visibility = Visibility.Visible;
         }
     }
 }

@@ -14,7 +14,74 @@ namespace StudActive.ViewModels
         /// <summary>
         /// Получить всех студентов из студсовета авторизованного пользователя
         /// </summary>
-        public List<StudentsActiveModel> GetStudentsActive(Guid userId)
+        public List<StudentsActiveModel> GetStudentsActiveIsNotArchive(Guid userId)
+        {
+            using var context = new Context();
+            List<StudentsActiveModel> result = new List<StudentsActiveModel>();
+            var userStudent = context.Students.FirstOrDefault(x => x.UserId == userId);
+            Guid studentId = userStudent.StudentId;
+
+            var allStudents = context.StudentStudActives.ToList();
+            var studentLogin = allStudents.FirstOrDefault(x => x.StudentId == studentId);
+            var studentActives = context.StudentStudActives.Where(x => x.StudentCouncilId == studentLogin.StudentCouncilId && x.IsArchive != true).ToList();
+            var students = context.Students.ToList();
+            var groups = context.Groups.ToList();
+            var roles = context.RoleStudActives.ToList();
+
+            if (studentActives != null)
+            {
+                foreach (var studActiv in studentActives)
+                {
+                    var student = students.FirstOrDefault(x => x.StudentId == studActiv.StudentId);
+                    var groupId = student.GroupId;
+                    var group = groups.FirstOrDefault(x => x.GroupId == groupId);
+
+                    string sex = student.Sex.ToString();
+
+                    if (sex == "0")
+                        sex = "Ж";
+                    else
+                        sex = "М";
+
+                    Guid roleId = studActiv.RoleActive.GetValueOrDefault();
+                    var role = roles.FirstOrDefault(x => x.Id == roleId);
+                    string roleName = role.Name;
+
+                    if (roleName == "Member")
+                        roleName = "Рядовой";
+                    else if (roleName == "Chairman")
+                        roleName = "Председатель";
+                    else if (roleName == "ViceChairman")
+                        roleName = "Зам. председателя";
+
+                    var council = context.StudentCouncils.FirstOrDefault(x => x.StudentCouncilId == studActiv.StudentCouncilId);
+
+                    long phoneString = Convert.ToInt64(student.MobilePhoneNumber);
+                    result.Add(new StudentsActiveModel
+                    {
+                        Fio = student.LastName + " " + student.FirstName + " " + student.MiddleName,
+                        EntryDate = studActiv.EntryDate,
+                        LeavingDate = studActiv.LeavingDate,
+                        ReEntryDate = studActiv.ReEntryDate,
+                        IsArchive = studActiv.IsArchive,
+                        Role = roleName,
+                        Sex = sex,
+                        MobilePhone = string.Format("{0:+7 (###) ###-##-##}", phoneString),
+                        BirthDate = student.BirthDate,
+                        VkLink = "https://vk.com/" + studActiv.VkLink,
+                        GroupName = group.Name + "-" + group.CourseNumber + group.Number,
+                        CouncilName = council.Name
+                    });
+                }
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public List<StudentsActiveModel> GetStudentsActiveIsArchiveToo(Guid userId)
         {
             using var context = new Context();
             List<StudentsActiveModel> result = new List<StudentsActiveModel>();
@@ -59,7 +126,7 @@ namespace StudActive.ViewModels
                     long phoneString = Convert.ToInt64(student.MobilePhoneNumber);
                     result.Add(new StudentsActiveModel
                     {
-                        Fio = student.FirstName + " " + student.MiddleName + " " + student.LastName,
+                        Fio = student.LastName + " " + student.FirstName + " " + student.MiddleName,
                         EntryDate = studActiv.EntryDate,
                         LeavingDate = studActiv.LeavingDate,
                         ReEntryDate = studActiv.ReEntryDate,
@@ -122,7 +189,7 @@ namespace StudActive.ViewModels
                 result = new StudentsActiveModel
                 {
                     Id = studActiv.StudentId,
-                    Fio = student.FirstName + " " + student.MiddleName + " " + student.LastName,
+                    Fio = student.LastName + " " + student.FirstName + " " + student.MiddleName,
                     EntryDate = studActiv.EntryDate,
                     LeavingDate = studActiv.LeavingDate,
                     ReEntryDate = studActiv.ReEntryDate,
@@ -270,19 +337,86 @@ namespace StudActive.ViewModels
             return result;
         }
 
-        public void CreateAgainStudentActive()
+        public bool CreateAgainStudentActive(RegistrationStudActiveModel regModel)
         {
+            using Context context = new Context();
+            bool result = true;
+            StudentStudActive studAct = new();
+            Student stud = new();
+            try
+            {
+                //Заполняем добавление в таблицу StudentStudActives
+                studAct.StudActiveId = Guid.NewGuid();
+                studAct.EntryDate = regModel.EntryDate;
+                studAct.IsArchive = regModel.IsArchive;
+                studAct.RoleActive = regModel.RoleActive;
+                studAct.VkLink = regModel.VkLink;
+                studAct.StudentId = regModel.StudentId;
+                studAct.StudentCouncilId = regModel.StudentCouncilId;
+                context.StudentStudActives.Add(studAct);
+                context.SaveChanges();
 
+                //Изменяем таблицу Students при условии, что изменилась группа студента или имя
+                var student = context.Students
+                    .Where(x => x.StudentId == regModel.StudentId)
+                    .FirstOrDefault();
+                if (student.GroupId != regModel.GroupId)
+                {
+                    student.GroupId = regModel.GroupId;
+                    context.SaveChanges();
+                }
+                if (student.FirstName != regModel.FirstName)
+                {
+
+                }
+            }
+            catch
+            {
+                result = false;
+            }
+
+            return result;
         }
 
-        public void CreateFullNewStudentActive()
+        public bool CreateFullNewStudentActive(RegistrationStudActiveModel regModel)
         {
+            using Context context = new Context();
+            bool result = true;
+            StudentStudActive studAct = new();
+            Student stud = new();
+            try
+            {
+                //Заполняем добавление в таблицу Students
+                stud.FirstName = regModel.FirstName;
+                stud.MiddleName = regModel.MiddleName;
+                stud.LastName = regModel.LastName;
+                stud.GroupId = regModel.GroupId;
 
+                //Заполняем добавление в таблицу StudentStudActives
+                studAct.StudActiveId = Guid.NewGuid();
+                studAct.EntryDate = regModel.EntryDate;
+                studAct.IsArchive = regModel.IsArchive;
+                studAct.RoleActive = regModel.RoleActive;
+                studAct.VkLink = regModel.VkLink;
+                studAct.StudentId = regModel.StudentId;
+                studAct.StudentCouncilId = regModel.StudentCouncilId;
+                context.StudentStudActives.Add(studAct);
+                context.SaveChanges();
+            }
+            catch
+            {
+                result = false;
+            }
+
+            return result;
         }
 
         public Guid? GetStudentCouncilId(Guid studentId)
         {
-            return null;
+            using var context = new Context();
+            var studActiv = context.StudentStudActives.FirstOrDefault(x => x.StudentId == studentId);
+            var council = context.StudentCouncils.FirstOrDefault(x => x.StudentCouncilId == studActiv.StudentCouncilId);
+            return council.StudentCouncilId;
         }
     }
 }
