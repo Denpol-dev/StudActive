@@ -20,19 +20,21 @@ namespace StudActive.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly ObservableCollection<GroupsModel> groups = new();
+
         BlurEffect myEffect = new BlurEffect();
         StudentsViewModel studentsViewModel = new StudentsViewModel();
         DutyListViewModel dutyListViewModel = new DutyListViewModel();
         AccountModel account = new AccountModel();
-        public Guid GroupId { get; set; }
-        public string GroupName { get; set; }
-        public ObservableCollection<GroupsModel> GroupsData { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
             MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
+
+            cbGroupName.ItemsSource = groups;
+            cbGroupNameChange.ItemsSource = groups;
         }
         public MainWindow(AccountModel accountModel) : this()
         {
@@ -74,13 +76,7 @@ namespace StudActive.Views
             StudActivesDataGrid.ItemsSource = studentsViewModel.GetStudentsActiveIsNotArchive(account.Id);
             StudentGridReg.ItemsSource = studentsViewModel.GetAllStudents();
 
-            cbGroupName.ItemsSource = studentsViewModel.GetAllGroups()/*.Select(x => x.GroupName)*/;
-            cbGroupName.SelectedValuePath = "GroupId";
-            cbGroupName.DisplayMemberPath = "GroupName";
-
-            cbGroupNameChange.ItemsSource = studentsViewModel.GetAllGroups()/*.Select(x => x.GroupName)*/;
-            cbGroupNameChange.SelectedValuePath = "GroupId";
-            cbGroupNameChange.DisplayMemberPath = "GroupName";
+            studentsViewModel.GetAllGroups().ForEach(gr => groups.Add(gr));
 
             cbRoleActive.ItemsSource = studentsViewModel.GetAllRolesStudActiveModel().OrderBy(x => x.NameRU);
 
@@ -276,11 +272,9 @@ namespace StudActive.Views
 
         private void Registration_Click(object sender, RoutedEventArgs e)
         {
-            RegistrationStudActiveModel regModel = new RegistrationStudActiveModel();
-
             StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
             RolesStudActiveModel cbRoleActiveSelected = (RolesStudActiveModel)cbRoleActive.SelectedItem;
-            Guid roleActive = cbRoleActiveSelected.RoleId;
+            Guid roleActive = cbRoleActiveSelected != null ? cbRoleActiveSelected.RoleId : Guid.Parse("356DC01F-165E-452B-BB91-BF0E0D536564");
             GroupsModel cbGroupNameSelected = (GroupsModel)cbGroupName.SelectedItem;
             Guid groupId = cbGroupNameSelected.GroupId;
             Guid? studentCouncilId = studentsViewModel.GetStudentCouncilId(userInfo.Id);
@@ -288,7 +282,36 @@ namespace StudActive.Views
 
             if (StudentIdText.Text is not null) //Уже есть в системе
             {
-                regModel = new RegistrationStudActiveModel
+
+                RegistrationStudActiveModel regModel = new RegistrationStudActiveModel
+                {
+                    StudActiveId = Guid.NewGuid(),
+                    EntryDate = DateTime.Today,
+                    IsArchive = false,
+                    RoleActive = roleActive,
+                    VkLink = VkLink.Text,
+                    StudentId = studActiveId,
+                    StudentCouncilId = studentCouncilId.Value,
+                    GroupId = groupId,
+                    Sex = cbSex.SelectedIndex
+                };
+                bool res = studentsViewModel.CreateAgainStudentActive(regModel);
+
+                if (res)
+                {
+                    StudentIdText.Text = null;
+                    CreateStudActiveStack.Visibility = Visibility.Collapsed;
+                    StudActiveGridPanel.Visibility = Visibility.Visible;
+                    MessageBox.Show("Регистрация успешна.");
+                }
+                else
+                {
+                    MessageBox.Show("Регистрация не удалась.", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            else //Новый студент
+            {
+                RegistrationStudActiveModel regModel = new RegistrationStudActiveModel
                 {
                     StudActiveId = Guid.NewGuid(),
                     EntryDate = DateTime.Today,
@@ -299,20 +322,25 @@ namespace StudActive.Views
                     StudentCouncilId = studentCouncilId.Value,
                     GroupId = groupId
                 };
-                studentsViewModel.CreateAgainStudentActive(regModel);
+                bool res = studentsViewModel.CreateFullNewStudentActive(regModel);
+
+                if (res)
+                {
+                    StudentIdText.Text = null;
+                    CreateStudActiveStack.Visibility = Visibility.Collapsed;
+                    StudActiveGridPanel.Visibility = Visibility.Visible;
+                    MessageBox.Show("Регистрация успешна.");
+                }
+                else
+                {
+                    MessageBox.Show("Регистрация не удалась.", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
-            else //Новый студент
-            {
-                //regModel.Add(new RegistrationStudActiveModel
-                //{
-                //    RoleActive = cbRoleActiveSelected.RoleId,
-                //    VkLink = VkLink.Text,
-                //    StudentCouncilId = (Guid)studentCouncilId,
-                //    EntryDate = DateTime.Today,
-                //    GroupId = (cbGroupName.SelectedItem as GroupsModel).GroupId
-                //});
-                //studentsViewModel.CreateFullNewStudentActive(regModel);
-            }
+        }
+
+        private void ChangeStudActive_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void SelectStudent_Click(object sender, RoutedEventArgs e)
@@ -333,7 +361,7 @@ namespace StudActive.Views
                 if (context.Fio != "Пусто")
                 {
                     string[] fio = context.Fio.Split();
-                    GroupsModel group = new GroupsModel();
+                    GroupsModel group = new();
                     group.GroupId = context.GroupId;
                     group.GroupName = context.GroupNumber;
 
@@ -351,7 +379,9 @@ namespace StudActive.Views
                     birthDatePicker.SelectedDate = birthDate;
 
                     StudentIdText.Text = context.Id.ToString();
-                    cbGroupName.SelectedItem = group.GroupName;
+
+                    groups.Add(group);
+                    cbGroupName.SelectedItem = group;
 
                     if (context.Sex.ToString() == "1")
                     {

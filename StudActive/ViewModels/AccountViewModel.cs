@@ -74,14 +74,8 @@ namespace StudActive.ViewModels
             var student = context.Students.FirstOrDefault(x => x.UserId == user.Id);
             var studActive = context.StudentStudActives.FirstOrDefault(x => x.StudentId == student.StudentId);
 
-            if (studActive != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            bool result = studActive != null ? true : false;
+            return result;
         }
 
         public string HashPass(string text, byte[] salt)

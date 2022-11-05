@@ -337,30 +337,78 @@ namespace StudActive.ViewModels
             return result;
         }
 
-        public void CreateAgainStudentActive(RegistrationStudActiveModel regModel)
+        public bool CreateAgainStudentActive(RegistrationStudActiveModel regModel)
         {
+            using Context context = new Context();
+            bool result = true;
+            StudentStudActive studAct = new();
+            Student stud = new();
+            try
+            {
+                //Заполняем добавление в таблицу StudentStudActives
+                studAct.StudActiveId = Guid.NewGuid();
+                studAct.EntryDate = regModel.EntryDate;
+                studAct.IsArchive = regModel.IsArchive;
+                studAct.RoleActive = regModel.RoleActive;
+                studAct.VkLink = regModel.VkLink;
+                studAct.StudentId = regModel.StudentId;
+                studAct.StudentCouncilId = regModel.StudentCouncilId;
+                context.StudentStudActives.Add(studAct);
+                context.SaveChanges();
 
+                //Изменяем таблицу Students при условии, что изменилась группа студента или имя
+                var student = context.Students
+                    .Where(x => x.StudentId == regModel.StudentId)
+                    .FirstOrDefault();
+                if (student.GroupId != regModel.GroupId)
+                {
+                    student.GroupId = regModel.GroupId;
+                    context.SaveChanges();
+                }
+                if (student.FirstName != regModel.FirstName)
+                {
+
+                }
+            }
+            catch
+            {
+                result = false;
+            }
+
+            return result;
         }
 
-        public void CreateFullNewStudentActive(List<RegistrationStudActiveModel> regModel)
+        public bool CreateFullNewStudentActive(RegistrationStudActiveModel regModel)
         {
-            //using var context = new Context();
-            //Guid newStudentGuid = Guid.NewGuid();
+            using Context context = new Context();
+            bool result = true;
+            StudentStudActive studAct = new();
+            Student stud = new();
+            try
+            {
+                //Заполняем добавление в таблицу Students
+                stud.FirstName = regModel.FirstName;
+                stud.MiddleName = regModel.MiddleName;
+                stud.LastName = regModel.LastName;
+                stud.GroupId = regModel.GroupId;
 
-            //Student student = new Student
-            //{
-            //    StudentId = newStudentGuid,
-            //    GroupId = 
-            //}
+                //Заполняем добавление в таблицу StudentStudActives
+                studAct.StudActiveId = Guid.NewGuid();
+                studAct.EntryDate = regModel.EntryDate;
+                studAct.IsArchive = regModel.IsArchive;
+                studAct.RoleActive = regModel.RoleActive;
+                studAct.VkLink = regModel.VkLink;
+                studAct.StudentId = regModel.StudentId;
+                studAct.StudentCouncilId = regModel.StudentCouncilId;
+                context.StudentStudActives.Add(studAct);
+                context.SaveChanges();
+            }
+            catch
+            {
+                result = false;
+            }
 
-            //StudentStudActive studentActive = new StudentStudActive
-            //{
-            //    StudActiveId = Guid.NewGuid(),
-            //    StudentId = newStudentGuid,
-            //    EntryDate = regModel[0].EntryDate,
-            //    IsArchive = false,
-
-            //};
+            return result;
         }
 
         public Guid? GetStudentCouncilId(Guid studentId)

@@ -103,21 +103,24 @@
                         <Button x:Name="CreateStudActive" Margin="5" HorizontalAlignment="Left" Cursor="Hand" Padding="5,5,5,5" Background="{x:Null}" BorderBrush="Black" Foreground="{x:Null}" ToolTip="Добавить нового студента" VerticalAlignment="Top" ButtonBase.Click="CreateStudActive_Click">
                             <Image Source="pack://application:,,,/Content/IconButtons/add_user.png"/>
                         </Button>
+                        <Button x:Name="UpdateStudActive" Margin="5" HorizontalAlignment="Left" Cursor="Hand" Padding="5,5,5,5" Background="{x:Null}" BorderBrush="Black" Foreground="{x:Null}" ToolTip="Обновить" VerticalAlignment="Top" >
+                            <Image Source="pack://application:,,,/Content/IconButtons/refresh.png"/>
+                        </Button>
                         <CheckBox x:Name="IsArchive" FontSize="14" Content="Архив" Margin="5" Height="32" Cursor="Hand" Padding="5,5,5,5" ToolTip="Показать архивных студентов" Checked="IsArchive_Checked" Unchecked="IsArchive_Unchecked"/>
                     </StackPanel>
-                    <DataGrid x:Name="StudActivesDataGrid" Margin="35,0,0,0" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="StudentsDataGrid_MouseDoubleClick">
+                    <DataGrid x:Name="StudActivesDataGrid" Margin="0,0,0,0" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="StudentsDataGrid_MouseDoubleClick">
                         <!--<DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Добавить в архив" Command="{}"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>-->
                         <DataGrid.Columns>
-                            <materialDesign:DataGridTextColumn Binding="{Binding Fio}" Header="ФИО" Width="400"/>
-                            <materialDesign:DataGridTextColumn Binding="{Binding GroupName}" Header="Номер группы" Width="200"/>
-                            <materialDesign:DataGridTextColumn Binding="{Binding BirthDate, StringFormat='dd/MM/yyyy'}" Width="200" Header="Дата рождения"/>
-                            <materialDesign:DataGridTextColumn Binding="{Binding Role}" Width="200" Header="Должность"/>
-                            <materialDesign:DataGridTextColumn Binding="{Binding EntryDate, StringFormat='dd/MM/yyyy'}" Width="200" Header="Дата вступления"/>
-                            <DataGridCheckBoxColumn Binding="{Binding IsArchive}" Header="Архив"/>
+                            <materialDesign:DataGridTextColumn Binding="{Binding Fio}" Header="ФИО" Width="2*"/>
+                            <materialDesign:DataGridTextColumn Binding="{Binding GroupName}" Header="Номер группы" Width="1*"/>
+                            <materialDesign:DataGridTextColumn Binding="{Binding BirthDate, StringFormat='dd/MM/yyyy'}" Width="1*" Header="Дата рождения"/>
+                            <materialDesign:DataGridTextColumn Binding="{Binding Role}" Width="1*" Header="Должность"/>
+                            <materialDesign:DataGridTextColumn Binding="{Binding EntryDate, StringFormat='dd/MM/yyyy'}" Width="1*" Header="Дата вступления"/>
+                            <DataGridCheckBoxColumn Binding="{Binding IsArchive}" Header="Архив" Width="1*"/>
                         </DataGrid.Columns>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
@@ -130,90 +133,92 @@
                         </DataGrid.RowStyle>
                     </DataGrid>
                 </StackPanel>
-                <StackPanel x:Name="ChangeStudentActive" VerticalAlignment="Top" Visibility="Collapsed">
-                    <TextBlock x:Name="NameStudent" Text="NameStudent" FontSize="40" FontFamily="Comfortaa" Margin="5,5,0,10" FontWeight="Bold"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Button x:Name="closeChangeStudent" Margin="5" Width="35" Height="35" HorizontalAlignment="Left" Cursor="Hand" Padding="5,5,5,5" Background="{x:Null}" BorderBrush="Black" Foreground="{x:Null}" ToolTip="Выйти" VerticalAlignment="Top" ButtonBase.Click="closeChangeStudent_Click">
-                            <Image Source="pack://application:,,,/Content/IconButtons/close.png"/>
-                        </Button>
-                        <TextBlock Text="Изменение информации о студенте." FontSize="25" FontStyle="Normal" FontFamily="Comfortaa" Margin="0,5,0,10"/>
-                    </StackPanel>
-                    <Grid ShowGridLines="False">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Column="0" Grid.Row="1" Text="Имя: " FontSize="16" Margin="10"/>
-                        <TextBox Grid.Column="1" Grid.Row="1" FontSize="16" materialDesign:HintAssist.Hint="Имя" Margin="10" Cursor="Arrow" x:Name="FirstNameChange"/>
-
-                        <TextBlock Grid.Column="0" Grid.Row="2" Text="Фамилия: " FontSize="16" Margin="10"/>
-                        <TextBox Grid.Column="1" Grid.Row="2" FontSize="16" Text="" materialDesign:HintAssist.Hint="Фамилия" Margin="10" x:Name="MiddleNameChange"/>
-
-                        <TextBlock Grid.Column="0" Grid.Row="3" Text="Отчество: " FontSize="16"  Margin="10"/>
-                        <TextBox Grid.Column="1" Grid.Row="3" FontSize="16" Text="" materialDesign:HintAssist.Hint="Отчество" Margin="10" x:Name="LastNameChange"/>
-
-                        <TextBlock Grid.Column="0" Grid.Row="4" Text="Дата вступления: " FontSize="16" Margin="10"/>
-                        <DatePicker x:Name="entryDatePickerChange" Grid.Column="1" Grid.Row="4" SelectedDate="{x:Static sys:DateTime.Now}" FontSize="16" Margin="10"/>
-
-                        <TextBlock Grid.Column="0" Grid.Row="5" Text="Id профиля ВК: " FontSize="16" Margin="10"/>
-                        <TextBox Grid.Column="1" Grid.Row="5" FontSize="16" Text="" materialDesign:HintAssist.Hint="Id ВК" Margin="10" x:Name="VkLinkChange"/>
-                        <Button Grid.Column="2" Grid.Row="5" Style="{StaticResource MaterialDesignFloatingActionButton}" Width="40" Height="40" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Hand" Foreground="{x:Null}" ToolTip = "Пример: ссылка на ВК 'https://vk.com/denpolurotov', а ID - 'denpolurotov'">
-                            <Image Source="pack://application:,,,/Content/IconButtons/question.png" Width="30" Height="30"/>
-                        </Button>
-
-                        <TextBlock Grid.Column="0" Grid.Row="6" Text="Роль в студсовете: " FontSize="16" Margin="10"/>
-                        <ComboBox Grid.Column="1" Grid.Row="6" FontSize="16" x:Name="cbRoleActiveChange" ItemsSource="{Binding}" Margin="10" SelectedItem="Участник" SelectedValuePath="RoleId" DisplayMemberPath="NameRU"/>
-
-                        <TextBlock Grid.Column="0" Grid.Row="7" Text="Номер телефона: " FontSize="16" Margin="10"/>
-                        <StackPanel Grid.Column="1" Grid.Row="7" Orientation="Horizontal">
-                            <TextBlock Text="+7" FontSize="16" VerticalAlignment="Center"/>
-                            <TextBox materialDesign:HintAssist.Hint="(900)000-00-00" x:Name="PhoneNumberChange" FontSize="16" VerticalAlignment="Center" Width="273" Cursor="Arrow" MaxLength="10"/>
+                <Grid x:Name="ChangeStudentActive" VerticalAlignment="Top" Visibility="Visible">
+                    <StackPanel>
+                        <TextBlock x:Name="NameStudent" Text="NameStudent" FontSize="40" FontFamily="Comfortaa" Margin="5,5,0,10" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="closeChangeStudent" Margin="5" Width="35" Height="35" HorizontalAlignment="Left" Cursor="Hand" Padding="5,5,5,5" Background="{x:Null}" BorderBrush="Black" Foreground="{x:Null}" ToolTip="Выйти" VerticalAlignment="Top" ButtonBase.Click="closeChangeStudent_Click">
+                                <Image Source="pack://application:,,,/Content/IconButtons/close.png"/>
+                            </Button>
+                            <TextBlock Text="Изменение информации о студенте." FontSize="25" FontStyle="Normal" FontFamily="Comfortaa" Margin="0,5,0,10"/>
                         </StackPanel>
-                        <Button Grid.Column="2" Grid.Row="7" Style="{StaticResource MaterialDesignFloatingActionButton}" Width="40" Height="40" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Hand" Foreground="{x:Null}" ToolTip = "Вводить номер телефона нужно без пробелов и других знаков.">
-                            <Image Source="pack://application:,,,/Content/IconButtons/question.png" Width="30" Height="30"/>
-                        </Button>
+                        <Grid ShowGridLines="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Column="0" Grid.Row="8" Text="Дата рождения" FontSize="16" Margin="10"/>
-                        <DatePicker x:Name="birthDatePickerChange" Grid.Column="1" Grid.Row="8" SelectedDate="{x:Static sys:DateTime.Now}" FontSize="16" Margin="10"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Grid.Row="9" Text="Академическая группа: " FontSize="16" Margin="10"/>
-                        <ComboBox Grid.Column="1" Grid.Row="9" FontSize="16" x:Name="cbGroupNameChange" Margin="10" IsTextSearchEnabled="False" IsEditable="True" TextBoxBase.TextChanged="cbGroupName_TextChanged"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Имя: " FontSize="16" Margin="10"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" FontSize="16" materialDesign:HintAssist.Hint="Имя" Margin="10" Cursor="Arrow" x:Name="FirstNameChange"/>
 
-                        <TextBlock Grid.Column="0" Grid.Row="10" Text="Пол: " FontSize="16" Margin="10"/>
-                        <ComboBox Grid.Column="1" Grid.Row="10" FontSize="16" x:Name="cbSexChange" ItemsSource="{Binding}" Margin="10" IsEditable="True">
-                            <ComboBoxItem>
-                                <TextBlock Text="Мужской"/>
-                            </ComboBoxItem>
-                            <ComboBoxItem>
-                                <TextBlock Text="Женский"/>
-                            </ComboBoxItem>
-                        </ComboBox>
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Фамилия: " FontSize="16" Margin="10"/>
+                            <TextBox Grid.Column="1" Grid.Row="2" FontSize="16" Text="" materialDesign:HintAssist.Hint="Фамилия" Margin="10" x:Name="MiddleNameChange"/>
 
-                        <TextBlock Grid.Column = "0" Grid.Row="11" Text="Архив:" FontSize="16" Margin="10"/>
-                        <CheckBox Grid.Column="1" Grid.Row="11" x:Name="isArchiveChange" HorizontalAlignment="Center"/>
-                        
-                        <Button x:Name="ChangeStudent" Grid.Column="0" Grid.Row="12" Content="Изменить" Margin="10" Click="Registration_Click"/>
-                    </Grid>
-                </StackPanel>
-                <Grid x:Name="CreateStudActiveStack" VerticalAlignment="Top" Visibility="Visible">
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Отчество: " FontSize="16"  Margin="10"/>
+                            <TextBox Grid.Column="1" Grid.Row="3" FontSize="16" Text="" materialDesign:HintAssist.Hint="Отчество" Margin="10" x:Name="LastNameChange"/>
+
+                            <TextBlock Grid.Column="0" Grid.Row="4" Text="Дата вступления: " FontSize="16" Margin="10"/>
+                            <DatePicker x:Name="entryDatePickerChange" Grid.Column="1" Grid.Row="4" SelectedDate="{x:Static sys:DateTime.Now}" FontSize="16" Margin="10"/>
+
+                            <TextBlock Grid.Column="0" Grid.Row="5" Text="Id профиля ВК: " FontSize="16" Margin="10"/>
+                            <TextBox Grid.Column="1" Grid.Row="5" FontSize="16" Text="" materialDesign:HintAssist.Hint="Id ВК" Margin="10" x:Name="VkLinkChange"/>
+                            <Button Grid.Column="2" Grid.Row="5" Style="{StaticResource MaterialDesignFloatingActionButton}" Width="40" Height="40" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Hand" Foreground="{x:Null}" ToolTip = "Пример: ссылка на ВК 'https://vk.com/denpolurotov', а ID - 'denpolurotov'">
+                                <Image Source="pack://application:,,,/Content/IconButtons/question.png" Width="30" Height="30"/>
+                            </Button>
+
+                            <TextBlock Grid.Column="0" Grid.Row="6" Text="Роль в студсовете: " FontSize="16" Margin="10"/>
+                            <ComboBox Grid.Column="1" Grid.Row="6" FontSize="16" x:Name="cbRoleActiveChange" ItemsSource="{Binding}" Margin="10" SelectedItem="Участник" SelectedValuePath="RoleId" DisplayMemberPath="NameRU"/>
+
+                            <TextBlock Grid.Column="0" Grid.Row="7" Text="Номер телефона: " FontSize="16" Margin="10"/>
+                            <StackPanel Grid.Column="1" Grid.Row="7" Orientation="Horizontal">
+                                <TextBlock Text="+7" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBox materialDesign:HintAssist.Hint="(900)000-00-00" x:Name="PhoneNumberChange" FontSize="16" VerticalAlignment="Center" Width="273" Cursor="Arrow" MaxLength="10"/>
+                            </StackPanel>
+                            <Button Grid.Column="2" Grid.Row="7" Style="{StaticResource MaterialDesignFloatingActionButton}" Width="40" Height="40" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Hand" Foreground="{x:Null}" ToolTip = "Вводить номер телефона нужно без пробелов и других знаков.">
+                                <Image Source="pack://application:,,,/Content/IconButtons/question.png" Width="30" Height="30"/>
+                            </Button>
+
+                            <TextBlock Grid.Column="0" Grid.Row="8" Text="Дата рождения" FontSize="16" Margin="10"/>
+                            <DatePicker x:Name="birthDatePickerChange" Grid.Column="1" Grid.Row="8" SelectedDate="{x:Static sys:DateTime.Now}" FontSize="16" Margin="10"/>
+
+                            <TextBlock Grid.Column="0" Grid.Row="9" Text="Академическая группа: " FontSize="16" Margin="10"/>
+                            <ComboBox Grid.Column="1" Grid.Row="9" FontSize="16" x:Name="cbGroupNameChange" Margin="10" IsTextSearchEnabled="False" IsEditable="True" TextBoxBase.TextChanged="cbGroupName_TextChanged" SelectedValuePath="GroupId" DisplayMemberPath="GroupName"/>
+
+                            <TextBlock Grid.Column="0" Grid.Row="10" Text="Пол: " FontSize="16" Margin="10"/>
+                            <ComboBox Grid.Column="1" Grid.Row="10" FontSize="16" x:Name="cbSexChange" ItemsSource="{Binding}" Margin="10" IsEditable="True">
+                                <ComboBoxItem>
+                                    <TextBlock Text="Мужской"/>
+                                </ComboBoxItem>
+                                <ComboBoxItem>
+                                    <TextBlock Text="Женский"/>
+                                </ComboBoxItem>
+                            </ComboBox>
+
+                            <TextBlock Grid.Column = "0" Grid.Row="11" Text="Архив:" FontSize="16" Margin="10"/>
+                            <CheckBox Grid.Column="1" Grid.Row="11" x:Name="isArchiveChange" HorizontalAlignment="Center"/>
+
+                            <Button x:Name="ChangeStudent" Grid.Column="0" Grid.Row="12" Content="Изменить" Margin="10" Click="ChangeStudActive_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+                <Grid x:Name="CreateStudActiveStack" VerticalAlignment="Top" Visibility="Collapsed">
                     <StackPanel>
                         <TextBlock Text="Члены студсовета" FontSize="40" FontFamily="Comfortaa" Margin="0,5,0,10" FontWeight="Bold"/>
                         <StackPanel Orientation="Horizontal">
@@ -283,9 +288,7 @@
                                 <DatePicker x:Name="birthDatePicker" Grid.Column="1" Grid.Row="8" SelectedDate="{x:Static sys:DateTime.Now}" FontSize="16" Margin="10"/>
 
                                 <TextBlock Grid.Column="0" Grid.Row="9" Text="Академическая группа: " FontSize="16" Margin="10"/>
-                                <ComboBox Grid.Column="1" Grid.Row="9" FontSize="16" x:Name="cbGroupName" Margin="10" IsTextSearchEnabled="False" IsEditable="True" TextBoxBase.TextChanged="cbGroupName_TextChanged" 
-                                          ItemsSource="{Binding ElementName=mainWindow, Path=GroupsData}" SelectedValuePath="GroupId">
-                                </ComboBox>
+                                <ComboBox Grid.Column="1" Grid.Row="9" FontSize="16" x:Name="cbGroupName" Margin="10" IsTextSearchEnabled="False" IsEditable="True" SelectedValuePath="GroupId" DisplayMemberPath="GroupName"/>
 
                                 <TextBlock Grid.Column="0" Grid.Row="10" Text="Пол: " FontSize="16" Margin="10"/>
                                 <ComboBox Grid.Column="1" Grid.Row="10" FontSize="16" x:Name="cbSex" ItemsSource="{Binding}" Margin="10" IsEditable="True">
