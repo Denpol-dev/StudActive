@@ -7,11 +7,13 @@ namespace StudActive.Models
         public Guid Id { get; set; }
         public string CouncilName { get; set; }
         public string Fio { get; set; }
+        public Guid GroupId { get; set; }
         public string GroupName { get; set; }
         public DateTime? EntryDate { get; set; }
         public DateTime? LeavingDate { get; set; }
         public DateTime? ReEntryDate { get; set; }
         public bool IsArchive { get; set; }
+        public Guid RoleId { get; set; }
         public string Role { get; set; }
         public string Sex { get; set; }
         public string MobilePhone { get; set; }

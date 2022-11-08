@@ -48,7 +48,7 @@ namespace StudActive.ViewModels
                     string roleName = role.Name;
 
                     if (roleName == "Member")
-                        roleName = "Рядовой";
+                        roleName = "Участник";
                     else if (roleName == "Chairman")
                         roleName = "Председатель";
                     else if (roleName == "ViceChairman")
@@ -64,11 +64,13 @@ namespace StudActive.ViewModels
                         LeavingDate = studActiv.LeavingDate,
                         ReEntryDate = studActiv.ReEntryDate,
                         IsArchive = studActiv.IsArchive,
+                        RoleId = role.Id,
                         Role = roleName,
                         Sex = sex,
                         MobilePhone = string.Format("{0:+7 (###) ###-##-##}", phoneString),
                         BirthDate = student.BirthDate,
                         VkLink = "https://vk.com/" + studActiv.VkLink,
+                        GroupId = group.GroupId,
                         GroupName = group.Name + "-" + group.CourseNumber + group.Number,
                         CouncilName = council.Name
                     });
@@ -115,7 +117,7 @@ namespace StudActive.ViewModels
                     string roleName = role.Name;
 
                     if (roleName == "Member")
-                        roleName = "Рядовой";
+                        roleName = "Участник";
                     else if (roleName == "Chairman")
                         roleName = "Председатель";
                     else if (roleName == "ViceChairman")
@@ -131,11 +133,13 @@ namespace StudActive.ViewModels
                         LeavingDate = studActiv.LeavingDate,
                         ReEntryDate = studActiv.ReEntryDate,
                         IsArchive = studActiv.IsArchive,
+                        RoleId = role.Id,
                         Role = roleName,
                         Sex = sex,
                         MobilePhone = string.Format("{0:+7 (###) ###-##-##}", phoneString),
                         BirthDate = student.BirthDate,
                         VkLink = "https://vk.com/" + studActiv.VkLink,
+                        GroupId = group.GroupId,
                         GroupName = group.Name + "-" + group.CourseNumber + group.Number,
                         CouncilName = council.Name
                     });
@@ -271,6 +275,41 @@ namespace StudActive.ViewModels
             }
         }
 
+        public List<StudentsModel> GetNonRegistratedStrudents()
+        {
+            using var context = new Context();
+            List<StudentsModel> result = new List<StudentsModel>();
+            var students = context.Students.ToList();
+            var studentsActive = context.StudentStudActives.ToList();
+            List<Guid> studentsActiveIds = new();
+            studentsActive.ForEach(s => studentsActiveIds.Add(s.StudentId));
+            var groups = context.Groups.ToList();
+
+            result.Add(new StudentsModel
+            {
+                Fio = "Пусто",
+                BirthDate = null
+            });
+
+            foreach (var student in students)
+            {
+                if (!studentsActiveIds.Contains(student.StudentId))
+                {
+                    var group = groups.FirstOrDefault(x => x.GroupId == student.GroupId);
+                    result.Add(new StudentsModel
+                    {
+                        Id = student.StudentId,
+                        Fio = student.LastName + " " + student.FirstName + " " + student.MiddleName,
+                        GroupId = group.GroupId,
+                        GroupNumber = group.Name + "-" + group.CourseNumber + group.Number,
+                        Sex = student.Sex,
+                        BirthDate = student.BirthDate.Value,
+                        MobilePhone = student.MobilePhoneNumber
+                    });
+                }                
+            }
+            return result;
+        }
         public List<StudentsModel> GetAllStudents()
         {
             using var context = new Context();
