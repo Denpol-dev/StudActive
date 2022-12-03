@@ -96,6 +96,26 @@ namespace StudActive.Migrations
                     b.ToTable("HigherSchools");
                 });
 
+            modelBuilder.Entity("StudActive.Entities.Inventory", b =>
+                {
+                    b.Property<Guid>("InventoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("InventoryId");
+
+                    b.ToTable("Inventories");
+                });
+
             modelBuilder.Entity("StudActive.Entities.RoleStudActive", b =>
                 {
                     b.Property<Guid>("Id")

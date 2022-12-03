@@ -27,6 +27,7 @@ namespace StudActive.Entities
         public virtual DbSet<HigherSchool> HigherSchools { get; set; }
         public virtual DbSet<DutyListCalendar> DutyListCalendars { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<Inventory> Inventories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

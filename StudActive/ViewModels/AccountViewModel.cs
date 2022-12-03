@@ -99,5 +99,18 @@ namespace StudActive.ViewModels
             string hastValue = Convert.ToBase64String(hashSaltBytes);
             return hastValue;
         }
+
+        public static string GetPass(int x)
+        {
+            string pass = "";
+            var r = new Random();
+            while (pass.Length < x)
+            {
+                char c = (char)r.Next(33, 125);
+                if (char.IsLetterOrDigit(c))
+                    pass += c;
+            }
+            return pass;
+        }
     }
 }

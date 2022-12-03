@@ -27,6 +27,7 @@
     <None Remove="Content\IconButtons\refresh.png" />
     <None Remove="Content\IconButtons\restore.png" />
     <None Remove="Content\IconButtons\save.png" />
+    <None Remove="Content\NewLoginPassword.txt" />
     <None Remove="Content\SUSU.png" />
     <None Remove="Content\SUSUlogo.png" />
     <None Remove="Content\SUSUlogo_EN.png" />
@@ -96,6 +97,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Content\IconButtons\save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\NewLoginPassword.txt">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Content\SUSU.png">

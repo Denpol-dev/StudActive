@@ -95,7 +95,7 @@
                 </StackPanel>
             </Grid>
             <Grid x:Name="StudentsGrid" Visibility="Visible">
-                <StackPanel x:Name="StudActiveGridPanel" VerticalAlignment="Top" Visibility="Visible">
+                <StackPanel x:Name="StudActiveGridPanel" VerticalAlignment="Top" Visibility="Collapsed">
                     <TextBlock Text="Члены студсовета" FontSize="40" FontFamily="Comfortaa" Margin="0,5,0,10" FontWeight="Bold"/>
                     <TextBlock Text="Список студентов, состоящих в студенческом совете" FontSize="25" FontFamily="Comfortaa" Margin="0,5,0,10"/>
                     <TextBlock Text="Кликните дважды по нужному студенту для получения подробной информации." FontSize="14" FontStyle="Normal" FontFamily="Comfortaa" Margin="0,5,0,10"/>
@@ -115,6 +115,7 @@
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
                                 <EventSetter Event="MouseDoubleClick" Handler="StudentsDataGrid_MouseDoubleClick"/>
+                                <EventSetter Event="MouseRightButtonUp" Handler="StudentsDataGrid_MouseRightButtonUp"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding ="{Binding IsArchive}" Value="true">
                                         <Setter Property="Background" Value="#2196f3"/>
@@ -127,8 +128,7 @@
                         </DataGrid.RowStyle>
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Добавить в архив" />
-                                <!--Command="{Binding Source={x:}}"/>-->
+                                <MenuItem Header="Сменить архивность" Click="AddInArchive_Click"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>
@@ -227,7 +227,7 @@
                         </Grid>
                     </StackPanel>
                 </Grid>
-                <Grid x:Name="CreateStudActiveStack" VerticalAlignment="Top" Visibility="Collapsed">
+                <Grid x:Name="CreateStudActiveStack" VerticalAlignment="Top" Visibility="Visible">
                     <StackPanel>
                         <TextBlock Text="Члены студсовета" FontSize="40" FontFamily="Comfortaa" Margin="0,5,0,10" FontWeight="Bold"/>
                         <StackPanel Orientation="Horizontal">
@@ -263,14 +263,14 @@
                                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Выбрать существующего студента: " FontSize="16" Margin="10"/>
                                 <Button Grid.Column="1" Grid.Row="0" x:Name="SelectStudent" Content="Cтуденты" Width="300" Click="SelectStudent_Click" Cursor="Hand"/>
 
-                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Имя: " FontSize="16" Margin="10"/>
-                                <TextBox Grid.Column="1" Grid.Row="1" FontSize="16" materialDesign:HintAssist.Hint="Имя" Margin="10" Cursor="Arrow" x:Name="FirstName"/>
-
-                                <TextBlock Grid.Column="0" Grid.Row="2" Text="Фамилия: " FontSize="16" Margin="10"/>
-                                <TextBox Grid.Column="1" Grid.Row="2" FontSize="16" Text="" materialDesign:HintAssist.Hint="Фамилия" Margin="10" x:Name="MiddleName"/>
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Фамилия: " FontSize="16" Margin="10"/>
+                                <TextBox Grid.Column="1" Grid.Row="1" FontSize="16" Text="" materialDesign:HintAssist.Hint="Фамилия" Margin="10" x:Name="LastName"/>
+                                
+                                <TextBlock Grid.Column="0" Grid.Row="2" Text="Имя: " FontSize="16" Margin="10"/>
+                                <TextBox Grid.Column="1" Grid.Row="2" FontSize="16" materialDesign:HintAssist.Hint="Имя" Margin="10" Cursor="Arrow" x:Name="FirstName"/>
 
                                 <TextBlock Grid.Column="0" Grid.Row="3" Text="Отчество: " FontSize="16"  Margin="10"/>
-                                <TextBox Grid.Column="1" Grid.Row="3" FontSize="16" Text="" materialDesign:HintAssist.Hint="Отчество" Margin="10" x:Name="LastName"/>
+                                <TextBox Grid.Column="1" Grid.Row="3" FontSize="16" Text="" materialDesign:HintAssist.Hint="Отчество" Margin="10" x:Name="MiddleName"/>
 
                                 <TextBlock Grid.Column="0" Grid.Row="4" Text="Дата вступления: " FontSize="16" Margin="10"/>
                                 <DatePicker x:Name="entryDatePicker" Grid.Column="1" Grid.Row="4" SelectedDate="{x:Static sys:DateTime.Now}" FontSize="16" Margin="10"/>
@@ -353,6 +353,34 @@
                     </DataGrid>
                 </StackPanel>
             </Grid>
+            <Grid x:Name="InventoryGrid" Visibility="Collapsed">
+                <StackPanel x:Name="InventoryMainStack" Visibility="Visible">
+                    <TextBlock Text="Инвентарь" FontSize="40" FontFamily="Comfortaa" Margin="0,5,0,10" FontWeight="Bold"/>
+                    <TextBlock Text="Список инвентаря, находящегося на балансе студенческого совета" FontSize="25" FontFamily="Comfortaa" Margin="0,5,0,10"/>
+                    <TextBlock Text="Кликните дважды по нужному инвентарю для изменения информации." FontSize="14" FontStyle="Normal" FontFamily="Comfortaa" Margin="0,5,0,10"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="CreateNewInventory" Margin="5" HorizontalAlignment="Left" Cursor="Hand" Padding="5,5,5,5" Background="{x:Null}" BorderBrush="Black" Foreground="{x:Null}" ToolTip="Добавить новый инвентарь" VerticalAlignment="Top" ButtonBase.Click="CreateNewInventory_Click">
+                            <Image Source="pack://application:,,,/Content/IconButtons/add.png"/>
+                        </Button>
+                    </StackPanel>
+                    <DataGrid x:Name="InventoryDataGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="FullRow">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="InventoryGrid_MouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <materialDesign:DataGridTextColumn Binding="{Binding Name}" Header="Название"/>
+                            <materialDesign:DataGridTextColumn Binding="{Binding Description}" Header="Описание"/>
+                            <materialDesign:DataGridTextColumn Binding="{Binding Amount}" Header="Количество"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+                <StackPanel x:Name="InventoryDetailsStack" Visibility="Collapsed">
+                    <TextBlock Text="Инвентарь" FontSize="40" FontFamily="Comfortaa" Margin="0,5,0,10" FontWeight="Bold"/>
+                    <TextBlock Text="Изменение и добавление инвентаря" FontSize="25" FontFamily="Comfortaa" Margin="0,5,0,10"/>
+                </StackPanel>
+            </Grid>
         </Grid>
         <Grid x:Name="HamburgerGrid" HorizontalAlignment="Left">
             <Button x:Name="HamburgerButton" VerticalAlignment="Top" Height="40" Width="40" Padding="0,0,0,0" Margin="20,35,0,10" HorizontalAlignment="Left" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="HamburgerButton_Click">
@@ -372,7 +400,7 @@
                         </Button>
                     </StackPanel>
                     
-                    <StackPanel x:Name="StudentsStackHumburg" Visibility="Collapsed">
+                    <StackPanel x:Name="StudentsStackHumburg" Visibility="Visible">
                         <TextBlock Text="Студенты" FontSize="20" FontFamily="Comfortaa" Margin="5,15,0,5" FontWeight="Bold"/>
                         <Button x:Name="StudentsButton" Height="42" Padding="0,0,0,0" Cursor="Hand" Background="#FFBBBBBB" BorderBrush="#979797" Margin="10,0,0,0" Click="StudentsButton_Click">
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Width="400">
@@ -382,7 +410,7 @@
                         </Button>
                     </StackPanel>
 
-                    <StackPanel x:Name="DutyListStackHumburg" Visibility="Collapsed">
+                    <StackPanel x:Name="DutyListStackHumburg" Visibility="Visible">
                         <TextBlock Text="Дежурства" FontSize="20" FontFamily="Comfortaa" Margin="5,15,0,5" FontWeight="Bold"/>
                         <Button x:Name="DutyListButton" Height="42" Padding="0,0,0,0" Cursor="Hand" Background="#FFBBBBBB" BorderBrush="#979797" Margin="10,0,0,0" Click="DutyListButton_Click">
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Width="400">
@@ -400,7 +428,7 @@
 
                     <StackPanel x:Name="InventoryStackHumburg" Visibility="Visible">
                         <TextBlock Text="Инвентаризация" FontSize="20" FontFamily="Comfortaa" Margin="5,15,0,5" FontWeight="Bold"/>
-                        <Button x:Name="InventoryButton" Height="42" Padding="0,0,0,0" Cursor="Hand" Background="#FFBBBBBB" BorderBrush="#979797" Margin="10,0,0,0">
+                        <Button x:Name="InventoryButton" Height="42" Padding="0,0,0,0" Cursor="Hand" Background="#FFBBBBBB" BorderBrush="#979797" Margin="10,0,0,0" Click="InventoryButton_Click">
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Width="400">
                                 <Image Margin="10,10,10,10" Source="pack://application:,,,/Content/HumburgerIcons/inventory.png"/>
                                 <TextBlock Margin="10,0,0,0" Text="Инвентарь" FontFamily="Comfortaa" VerticalAlignment="Center" Foreground="Black"/>

@@ -7,7 +7,6 @@ E:\Users\polur\Desktop\Курсач\StudActive\StudActive\bin\Debug\net5.0-windo
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\bin\Debug\net5.0-windows\StudActive.runtimeconfig.json
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\bin\Debug\net5.0-windows\StudActive.runtimeconfig.dev.json
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\bin\Debug\net5.0-windows\StudActive.dll
-E:\Users\polur\Desktop\Курсач\StudActive\StudActive\bin\Debug\net5.0-windows\ref\StudActive.dll
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\bin\Debug\net5.0-windows\StudActive.pdb
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\bin\Debug\net5.0-windows\MaterialDesignColors.dll
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\bin\Debug\net5.0-windows\MaterialDesignThemes.Wpf.dll
@@ -64,6 +63,6 @@ E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windo
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Views\MainWindow.baml
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Styles\Custom\CustomWindow.baml
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Styles\Custom\CustomWindow.g.cs
-E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\GeneratedInternalTypeHelper.g.cs
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Views\Pages\PersonalArea.g.cs
 E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\Views\Pages\PersonalArea.baml
+E:\Users\polur\Desktop\Курсач\StudActive\StudActive\obj\Debug\net5.0-windows\refint\StudActive.dll

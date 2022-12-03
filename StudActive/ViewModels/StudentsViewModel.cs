@@ -6,27 +6,36 @@ using System.Threading.Tasks;
 using StudActive.Models;
 using StudActive.Entities;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Windows;
 
 namespace StudActive.ViewModels
 {
     public class StudentsViewModel
     {
         /// <summary>
-        /// Получить всех студентов из студсовета авторизованного пользователя
+        /// Получить студентов из студсовета авторизованного пользователя, которые не лежат в архиве
         /// </summary>
-        public List<StudentsActiveModel> GetStudentsActiveIsNotArchive(Guid userId)
+        public async Task<List<StudentsActiveModel>> GetStudentsActiveIsNotArchive(Guid userId)
         {
             using var context = new Context();
             List<StudentsActiveModel> result = new List<StudentsActiveModel>();
             var userStudent = context.Students.FirstOrDefault(x => x.UserId == userId);
             Guid studentId = userStudent.StudentId;
 
-            var allStudents = context.StudentStudActives.ToList();
+            List<StudentStudActive> allStudents = new();
+            List<StudentStudActive> studentActives = new();
+            List<Student> students = new();
+            List<Group> groups = new();
+            List<RoleStudActive> roles = new();
+
+            await context.StudentStudActives.ForEachAsync(context => { allStudents.Add(context); });
             var studentLogin = allStudents.FirstOrDefault(x => x.StudentId == studentId);
-            var studentActives = context.StudentStudActives.Where(x => x.StudentCouncilId == studentLogin.StudentCouncilId && x.IsArchive != true).ToList();
-            var students = context.Students.ToList();
-            var groups = context.Groups.ToList();
-            var roles = context.RoleStudActives.ToList();
+            await context.StudentStudActives.Where(x => x.StudentCouncilId == studentLogin.StudentCouncilId && x.IsArchive != true).ForEachAsync(context => { studentActives.Add(context); });
+            await context.Students.ForEachAsync(context=> { students.Add(context); });
+            await context.Groups.ForEachAsync(context => { groups.Add(context); });
+            await context.RoleStudActives.ForEachAsync(context => { roles.Add(context); });
 
             if (studentActives != null)
             {
@@ -59,6 +68,7 @@ namespace StudActive.ViewModels
                     long phoneString = Convert.ToInt64(student.MobilePhoneNumber);
                     result.Add(new StudentsActiveModel
                     {
+                        Id = studActiv.StudActiveId,
                         Fio = student.LastName + " " + student.FirstName + " " + student.MiddleName,
                         EntryDate = studActiv.EntryDate,
                         LeavingDate = studActiv.LeavingDate,
@@ -82,20 +92,28 @@ namespace StudActive.ViewModels
                 return null;
             }
         }
-
-        public List<StudentsActiveModel> GetStudentsActiveIsArchiveToo(Guid userId)
+        /// <summary>
+        /// Получить всех студентов из студсовета авторизованного пользователя
+        /// </summary>
+        public async Task<List<StudentsActiveModel>> GetStudentsActiveIsArchiveToo(Guid userId)
         {
             using var context = new Context();
             List<StudentsActiveModel> result = new List<StudentsActiveModel>();
             var userStudent = context.Students.FirstOrDefault(x => x.UserId == userId);
             Guid studentId = userStudent.StudentId;
 
-            var allStudents = context.StudentStudActives.ToList();
+            List<StudentStudActive> allStudents = new();
+            List<StudentStudActive> studentActives = new();
+            List<Student> students = new();
+            List<Group> groups = new();
+            List<RoleStudActive> roles = new();
+
+            await context.StudentStudActives.ForEachAsync(context => { allStudents.Add(context); });
             var studentLogin = allStudents.FirstOrDefault(x => x.StudentId == studentId);
-            var studentActives = context.StudentStudActives.Where(x => x.StudentCouncilId == studentLogin.StudentCouncilId).ToList();
-            var students = context.Students.ToList();
-            var groups = context.Groups.ToList();
-            var roles = context.RoleStudActives.ToList();
+            await context.StudentStudActives.Where(x => x.StudentCouncilId == studentLogin.StudentCouncilId).ForEachAsync(context => { studentActives.Add(context); });
+            await context.Students.ForEachAsync(context => { students.Add(context); });
+            await context.Groups.ForEachAsync(context => { groups.Add(context); });
+            await context.RoleStudActives.ForEachAsync(context => { roles.Add(context); });
 
             if (studentActives != null)
             {
@@ -128,6 +146,7 @@ namespace StudActive.ViewModels
                     long phoneString = Convert.ToInt64(student.MobilePhoneNumber);
                     result.Add(new StudentsActiveModel
                     {
+                        Id = studActiv.StudActiveId,
                         Fio = student.LastName + " " + student.FirstName + " " + student.MiddleName,
                         EntryDate = studActiv.EntryDate,
                         LeavingDate = studActiv.LeavingDate,
@@ -230,8 +249,10 @@ namespace StudActive.ViewModels
             Random random = new Random();
             int saltSize = random.Next(4, 8);
             salt = new byte[saltSize];
-            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-            rng.GetNonZeroBytes(salt);
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
 
             string text = plainText;
             byte[] textBytes = Encoding.UTF8.GetBytes(text);
@@ -263,6 +284,34 @@ namespace StudActive.ViewModels
 
             authorizedUser.Hash = hashSalt;
             authorizedUser.Salt = salt;
+
+            try
+            {
+                context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Генерация хэшей для всех пользователей (СТАРОЕ!)
+        /// </summary>
+        public bool CreateHashPass()
+        {
+            using var context = new Context();
+            var users = context.Users.Where(u => u.Hash == null);
+
+            foreach(var user in users)
+            {
+                Tuple<string, byte[]> saltHash = GetHashPass(user.Password);
+                string hashSalt = saltHash.Item1;
+                byte[] salt = saltHash.Item2;
+                user.Hash= hashSalt;
+                user.Salt = salt;
+            }
 
             try
             {
@@ -423,22 +472,57 @@ namespace StudActive.ViewModels
             bool result = true;
             StudentStudActive studAct = new();
             Student stud = new();
+            User user = new();
             try
             {
+                string fio = regModel.LastName + regModel.FirstName[0] + regModel.MiddleName[0];
+                Random r = new();
+                int rand = r.Next(10, 99);
+                int randPass = r.Next(5, 7);
+                string username = Transliteration.RuEnTransliteration(fio.ToUpper()) + rand.ToString();
+                string pass = AccountViewModel.GetPass(randPass);
+                Tuple<string, byte[]> HashSalt = GetHashPass(pass);
+                //Заполняем таблицу User
+                user.Id = Guid.NewGuid();
+                user.UserName = username.ToLower();
+                user.FirstName = regModel.FirstName;
+                user.MiddleName = regModel.MiddleName;
+                user.LastName = regModel.LastName;
+                user.Hash = HashSalt.Item1;
+                user.Salt = HashSalt.Item2;
+                user.Role = Guid.Parse("c4220640-6a53-4a3c-b681-e48e845d658f");
+                try
+                {
+                    FileStream fs = new FileStream(@"Content\NewLoginPassword.txt", FileMode.CreateNew);
+                    StreamWriter sw = new StreamWriter(fs, Encoding.Default);
+                    sw.WriteLine(username + " " + pass);
+                }
+                catch { }
+                MessageBox.Show(username + " " + pass);
+
                 //Заполняем добавление в таблицу Students
+                stud.StudentId = Guid.NewGuid();
+                stud.GroupId = regModel.GroupId;
                 stud.FirstName = regModel.FirstName;
                 stud.MiddleName = regModel.MiddleName;
                 stud.LastName = regModel.LastName;
-                stud.GroupId = regModel.GroupId;
+                stud.Sex= regModel.Sex;
+                stud.BirthDate= regModel.BirthDate;
+                stud.MobilePhoneNumber = regModel.MobilePhoneNumber;
+                stud.UserId = user.Id;
 
                 //Заполняем добавление в таблицу StudentStudActives
                 studAct.StudActiveId = Guid.NewGuid();
                 studAct.EntryDate = regModel.EntryDate;
-                studAct.IsArchive = regModel.IsArchive;
-                studAct.RoleActive = regModel.RoleActive;
-                studAct.VkLink = regModel.VkLink;
-                studAct.StudentId = regModel.StudentId;
+                studAct.IsArchive = false;
+                studAct.StudentId = stud.StudentId;
                 studAct.StudentCouncilId = regModel.StudentCouncilId;
+                studAct.VkLink = regModel.VkLink;
+                studAct.RoleActive = regModel.RoleActive;
+
+                //Сохранение
+                context.Users.Add(user);
+                context.Students.Add(stud);
                 context.StudentStudActives.Add(studAct);
                 context.SaveChanges();
             }
@@ -456,6 +540,23 @@ namespace StudActive.ViewModels
             var studActiv = context.StudentStudActives.FirstOrDefault(x => x.StudentId == studentId);
             var council = context.StudentCouncils.FirstOrDefault(x => x.StudentCouncilId == studActiv.StudentCouncilId);
             return council.StudentCouncilId;
+        }
+
+        public async Task<bool> AddInArchive(Guid studentId)
+        {
+            bool res = false;
+            using var context = new Context();
+
+            var student = await context.StudentStudActives.Where(x => x.StudActiveId == studentId).FirstOrDefaultAsync();
+
+            student.IsArchive = student.IsArchive != true;
+            try
+            {
+                context.SaveChanges();
+                res = true;
+            }
+            catch { }
+            return res;
         }
     }
 }
