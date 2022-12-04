@@ -1,6 +1,5 @@
 ﻿using StudActive.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +10,6 @@ using StudActive.ViewModels;
 using System.Diagnostics;
 using System.Data;
 using System.Collections.ObjectModel;
-using StudActive.Entities;
 
 namespace StudActive.Views
 {
@@ -28,6 +26,7 @@ namespace StudActive.Views
         private readonly ObservableCollection<DutyListModel> dutyList = new();
 
         StudentsActiveModel selectedStudActive = new();
+        DutyListModel SelectedDutyList = new();
 
         BlurEffect myEffect = new BlurEffect();
         StudentsViewModel studentsViewModel = new StudentsViewModel();
@@ -90,7 +89,7 @@ namespace StudActive.Views
             CouncilName.Text = userInfo.CouncilName;
 
             //Панель студентов
-            var studentsActives = await studentsViewModel.GetStudentsActiveIsNotArchive(account.Id);
+            var studentsActives = await StudentsViewModel.GetStudentsActiveIsNotArchive(account.Id);
             studentsActives.ForEach(s=> studActives.Add(s));
 
             var studentsNonReg = studentsViewModel.GetNonRegistratedStrudents();
@@ -103,7 +102,7 @@ namespace StudActive.Views
             roles.OrderBy(x => x.NameRU);
 
             //График дежурств
-            var duty = dutyListViewModel.GetDutyList();
+            var duty = await DutyListViewModel.GetDutyList();
             duty.ForEach(d=> dutyList.Add(d));
 
             //Инвентарь
@@ -279,6 +278,7 @@ namespace StudActive.Views
         {
             StudActiveGridPanel.Visibility = Visibility.Collapsed;
             ChangeStudentActive.Visibility = Visibility.Visible;
+            ChangeStudentActive.IsEnabled= true;
 
             if (StudActivesDataGrid.SelectedItem is not null)
             {
@@ -286,6 +286,7 @@ namespace StudActive.Views
                 if (row.DataContext is not StudentsActiveModel context) return;
                 Guid groupId = context.GroupId;
                 Guid roleId = context.RoleId;
+                StudentIdTextChange.Text = context.Id.ToString();
 
                 NameStudent.Text = context.Fio;
                 string[] fio = context.Fio.Split();
@@ -358,12 +359,14 @@ namespace StudActive.Views
 
         private void CreateStudActive_Click(object sender, RoutedEventArgs e)
         {
+            CreateStudActiveStack.IsEnabled = true;
             CreateStudActiveStack.Visibility = Visibility.Visible;
             StudActiveGridPanel.Visibility = Visibility.Collapsed;
         }
 
         private void BackToStudActivesGrid_Click(object sender, RoutedEventArgs e)
         {
+            CreateStudActiveStack.IsEnabled= false;
             CreateStudActiveStack.Visibility = Visibility.Collapsed;
             StudActiveGridPanel.Visibility = Visibility.Visible;
         }
@@ -413,12 +416,55 @@ namespace StudActive.Views
                     }
                     UpdateStudActiveDataGrid();
                 }
-            }            
+            }
         }
 
         private void ChangeStudActive_Click(object sender, RoutedEventArgs e)
         {
+            if (FirstNameChange.Text != "" || MiddleNameChange.Text != "" || LastNameChange.Text != "")
+            {
+                if (cbGroupNameChange.SelectedItem != null)
+                {
+                    StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
+                    RolesStudActiveModel cbRoleActiveSelected = (RolesStudActiveModel)cbRoleActiveChange.SelectedItem;
+                    Guid roleActive = cbRoleActiveSelected != null ? cbRoleActiveSelected.RoleId : Guid.Parse("356DC01F-165E-452B-BB91-BF0E0D536564");
+                    GroupsModel cbGroupNameSelected = (GroupsModel)cbGroupNameChange.SelectedItem;
+                    Guid groupId = cbGroupNameSelected.GroupId;
+                    Guid? studentCouncilId = studentsViewModel.GetStudentCouncilId(userInfo.Id);
+                    Guid studActiveId = StudentActiveIdTextChange.Text != "" ? Guid.Parse(StudentActiveIdTextChange.Text) : Guid.Empty;
 
+                    RegistrationStudActiveModel regModel = new RegistrationStudActiveModel
+                    {
+                        FirstName = FirstNameChange.Text,
+                        MiddleName = MiddleNameChange.Text,
+                        LastName = LastNameChange.Text,
+                        StudActiveId = Guid.Parse(StudentIdTextChange.Text),
+                        EntryDate = entryDatePickerChange.SelectedDate,
+                        IsArchive = false,
+                        RoleActive = roleActive,
+                        VkLink = VkLink.Text,
+                        StudentId = studActiveId,
+                        StudentCouncilId = studentCouncilId.Value,
+                        GroupId = groupId,
+                        Sex = cbSexChange.SelectedIndex
+                    };
+
+                    bool res = regModel.StudentId != Guid.Empty ? studentsViewModel.CreateAgainStudentActive(regModel) : studentsViewModel.CreateFullNewStudentActive(regModel);//Проверка на то, есть уже этот студент в системе, или нет
+
+                    if (res)
+                    {
+                        StudentIdText.Text = null;
+                        CreateStudActiveStack.Visibility = Visibility.Collapsed;
+                        StudActiveGridPanel.Visibility = Visibility.Visible;
+                        MessageBox.Show("Регистрация успешна.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Регистрация не удалась.", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    UpdateStudActiveDataGrid();
+                }
+            }
         }
 
         private void SelectStudent_Click(object sender, RoutedEventArgs e)
@@ -430,14 +476,6 @@ namespace StudActive.Views
             NewStudentStack.Effect = effect;
         }
 
-        
-        public string SelectedUnit
-        {
-            set
-            {
-
-            }
-        }
         private void cbGroupName_TextChanged(object sender, TextChangedEventArgs e)
         {
             cbGroupName.IsDropDownOpen = true;
@@ -453,12 +491,13 @@ namespace StudActive.Views
 
         private void UpdateStudActive_Click(object sender, RoutedEventArgs e)
         {
+
             UpdateStudActiveDataGrid();
         }
         public async void UpdateStudActiveDataGrid()
         {
             studActives.Clear();
-            var st = IsArchive.IsChecked == true ? await studentsViewModel.GetStudentsActiveIsArchiveToo(account.Id) : await studentsViewModel.GetStudentsActiveIsNotArchive(account.Id);
+            var st = IsArchive.IsChecked == true ? await StudentsViewModel.GetStudentsActiveIsArchiveToo(account.Id) : await StudentsViewModel.GetStudentsActiveIsNotArchive(account.Id);
             st.ForEach(s => studActives.Add(s));
         }
 
@@ -470,20 +509,20 @@ namespace StudActive.Views
         private async void IsArchive_Checked(object sender, RoutedEventArgs e)
         {
             studActives.Clear();
-            var st = await studentsViewModel.GetStudentsActiveIsArchiveToo(account.Id);
+            var st = await StudentsViewModel.GetStudentsActiveIsArchiveToo(account.Id);
             st.ForEach(s => studActives.Add(s));
         }
 
         private async void IsArchive_Unchecked(object sender, RoutedEventArgs e)
         {
             studActives.Clear();
-            var st = await studentsViewModel.GetStudentsActiveIsNotArchive(account.Id);
+            var st = await StudentsViewModel.GetStudentsActiveIsNotArchive(account.Id);
             st.ForEach(s => studActives.Add(s));
         }
 
         private async void AddInArchive_Click(object sender, RoutedEventArgs e)
         {
-            await studentsViewModel.AddInArchive(selectedStudActive.Id);
+            await StudentsViewModel.ChangeIsArchive(selectedStudActive.Id);
             UpdateStudActiveDataGrid();
         }
 
@@ -543,21 +582,52 @@ namespace StudActive.Views
         #endregion
 
         #region График дежурств
-        private void DutyListDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private async void DutyListDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //if (DutyListDataGrid.SelectedItem != null)
-            //{
-            //    Guid id;
-            //    var row = (DataGridRow)sender;
-            //    if (row.DataContext is not Guid context) return;
-            //    id = context.;
+            if (DutyListDataGrid.SelectedItem != null)
+            {
+                Guid id;
+                var row = (DataGridRow)sender;
+                if (row.DataContext is DutyListModel context)
+                {
+                    id = context.Id;
+                    bool check = dutyListViewModel.SaveDuty(id);
+                    if (check)
+                    {
+                        dutyList.Clear();
+                        var duty = await DutyListViewModel.GetDutyList();
+                        duty.ForEach(d => dutyList.Add(d));
+                        MessageBox.Show("Сохранение успешно!", "Сообщение", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+            }
+        }
 
-            //    bool check = dutyListViewModel.SaveDuty(id);
-            //    if (check)
-            //    {
-            //        MessageBox.Show("Сохранение успешно!", "Сообщение", MessageBoxButton.OK, MessageBoxImage.Information);
-            //    }
-            //}
+        private async void Missed_Click(object sender, RoutedEventArgs e)
+        {
+            if (DutyListDataGrid.SelectedItem != null)
+            {
+                Guid id;
+
+                id = SelectedDutyList.Id;
+                bool check = dutyListViewModel.MissedDuty(id);
+                if (check)
+                {
+                    dutyList.Clear();
+                    var duty = await DutyListViewModel.GetDutyList();
+                    duty.ForEach(d => dutyList.Add(d));
+                    MessageBox.Show("Сохранение успешно!", "Сообщение", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+
+        private void DutyListDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            DataGridRow row = (DataGridRow)sender;
+            if (row.DataContext is DutyListModel context)
+            {
+                SelectedDutyList = context;
+            }
         }
 
         #endregion

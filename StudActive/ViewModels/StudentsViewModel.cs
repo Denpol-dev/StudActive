@@ -17,7 +17,7 @@ namespace StudActive.ViewModels
         /// <summary>
         /// Получить студентов из студсовета авторизованного пользователя, которые не лежат в архиве
         /// </summary>
-        public async Task<List<StudentsActiveModel>> GetStudentsActiveIsNotArchive(Guid userId)
+        public static async Task<List<StudentsActiveModel>> GetStudentsActiveIsNotArchive(Guid userId)
         {
             using var context = new Context();
             List<StudentsActiveModel> result = new List<StudentsActiveModel>();
@@ -95,7 +95,7 @@ namespace StudActive.ViewModels
         /// <summary>
         /// Получить всех студентов из студсовета авторизованного пользователя
         /// </summary>
-        public async Task<List<StudentsActiveModel>> GetStudentsActiveIsArchiveToo(Guid userId)
+        public static async Task<List<StudentsActiveModel>> GetStudentsActiveIsArchiveToo(Guid userId)
         {
             using var context = new Context();
             List<StudentsActiveModel> result = new List<StudentsActiveModel>();
@@ -425,6 +425,11 @@ namespace StudActive.ViewModels
             return result;
         }
 
+        /// <summary>
+        /// Создание студента СС из уже зарегистрированного студента
+        /// </summary>
+        /// <param name="regModel"></param>
+        /// <returns></returns>
         public bool CreateAgainStudentActive(RegistrationStudActiveModel regModel)
         {
             using Context context = new Context();
@@ -465,7 +470,11 @@ namespace StudActive.ViewModels
 
             return result;
         }
-
+        /// <summary>
+        /// Полное создание нового студента в систему
+        /// </summary>
+        /// <param name="regModel"></param>
+        /// <returns></returns>
         public bool CreateFullNewStudentActive(RegistrationStudActiveModel regModel)
         {
             using Context context = new Context();
@@ -542,7 +551,12 @@ namespace StudActive.ViewModels
             return council.StudentCouncilId;
         }
 
-        public async Task<bool> AddInArchive(Guid studentId)
+        /// <summary>
+        /// Изменение архивности студента
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <returns></returns>
+        public static async Task<bool> ChangeIsArchive(Guid studentId)
         {
             bool res = false;
             using var context = new Context();
