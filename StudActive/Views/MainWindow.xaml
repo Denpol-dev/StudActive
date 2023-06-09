@@ -29,7 +29,7 @@
             </StackPanel>
         </Grid>
         <Grid x:Name="MainGrid" Margin="75,35,0,0">
-            <Grid x:Name="PersonalArea" Visibility="Collapsed">
+            <Grid x:Name="PersonalArea" Visibility="Visible">
                 <StackPanel VerticalAlignment="Top" x:Name="PersonalAreaStack">
                     <TextBlock Text="Личный кабинет" FontSize="40" FontFamily="Comfortaa" Margin="0,5,0,10" FontWeight="Bold"/>
                     <StackPanel Margin="10" OpacityMask="Black">
@@ -94,8 +94,8 @@
                     <Button x:Name="ChangePass" Content="Изменить пароль" Margin="10" Click="ChangePass_Click"/>
                 </StackPanel>
             </Grid>
-            <Grid x:Name="StudentsGrid" Visibility="Visible">
-                <StackPanel x:Name="StudActiveGridPanel" VerticalAlignment="Top" Visibility="Collapsed">
+            <Grid x:Name="StudentsGrid" Visibility="Collapsed">
+                <StackPanel x:Name="StudActiveGridPanel" VerticalAlignment="Top" Visibility="Visible">
                     <TextBlock Text="Члены студсовета" FontSize="40" FontFamily="Comfortaa" Margin="0,5,0,10" FontWeight="Bold"/>
                     <TextBlock Text="Список студентов, состоящих в студенческом совете" FontSize="25" FontFamily="Comfortaa" Margin="0,5,0,10"/>
                     <TextBlock Text="Кликните дважды по нужному студенту для получения подробной информации." FontSize="14" FontStyle="Normal" FontFamily="Comfortaa" Margin="0,5,0,10"/>
@@ -139,7 +139,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>
-                <Grid x:Name="ChangeStudentActive" VerticalAlignment="Top" Visibility="Visible">
+                <Grid x:Name="ChangeStudentActive" VerticalAlignment="Top" Visibility="Collapsed">
                     <StackPanel>
                         <TextBlock x:Name="NameStudent" Text="NameStudent" FontSize="40" FontFamily="Comfortaa" Margin="5,5,0,10" FontWeight="Bold"/>
                         <StackPanel Orientation="Horizontal">

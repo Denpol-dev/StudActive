@@ -20,6 +20,7 @@ namespace StudActive.Entities
         public Guid? Role { get; set; }
         public string Hash { get; set; }
         public byte[] Salt { get; set; }
+        public bool IsValid { get; set; }
 
         public virtual ICollection<Student> Students { get; set; }
     }

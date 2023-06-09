@@ -478,6 +478,7 @@ namespace StudActive.ViewModels
                 user.Hash = HashSalt.Item1;
                 user.Salt = HashSalt.Item2;
                 user.Role = Guid.Parse("c4220640-6a53-4a3c-b681-e48e845d658f");
+                user.IsValid = true;
                 try
                 {
                     FileStream fs = new FileStream(@"Content\NewLoginPassword.txt", FileMode.CreateNew);
@@ -495,7 +496,7 @@ namespace StudActive.ViewModels
                 stud.LastName = regModel.LastName;
                 stud.Sex= regModel.Sex;
                 stud.BirthDate= regModel.BirthDate;
-                stud.MobilePhoneNumber = regModel.MobilePhoneNumber;
+                stud.MobilePhoneNumber = regModel.MobilePhoneNumber.Where(char.IsDigit).ToString();
                 stud.UserId = user.Id;
 
                 //Заполняем добавление в таблицу StudentStudActives
@@ -513,8 +514,9 @@ namespace StudActive.ViewModels
                 context.StudentStudActives.Add(studAct);
                 context.SaveChanges();
             }
-            catch
+            catch (Exception ex) 
             {
+
                 result = false;
             }
 
