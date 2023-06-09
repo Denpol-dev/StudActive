@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Azure;
+using Newtonsoft.Json;
+using StudActive.Services;
+using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace StudActive.Models
 {
@@ -19,6 +25,7 @@ namespace StudActive.Models
         public string MobilePhone { get; set; }
         public string VkLink { get; set; }
         public DateTime? BirthDate { get; set; }
+        public Guid StudentId { get; set; }
     }
 
     public class RegistrationStudActiveModel
@@ -39,5 +46,34 @@ namespace StudActive.Models
         public int Sex { get; set; }
         public DateTime? BirthDate { get; set; }
         public string MobilePhoneNumber { get; set; }
+
+        public async Task<bool> ChangeStudentActive()
+        {
+            var response = "";
+            var url = Connection.url + "studactive/changestudentactive";
+            var res = false;
+
+            using (var httpClient = new HttpClient())
+            {
+                var uri = new UriBuilder(url);
+                httpClient.DefaultRequestHeaders.Add("userid", App.userId.ToString());
+                var st = JsonConvert.SerializeObject(this);
+                var re = new StringContent(JsonConvert.SerializeObject(this), Encoding.UTF8, "application/json");
+
+                try
+                {
+                    var result = await httpClient.PutAsync(uri.Uri, re);
+                    result.EnsureSuccessStatusCode();
+                    response = await result.Content.ReadAsStringAsync();
+                    res = true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+
+            return res;
+        }
     }
 }

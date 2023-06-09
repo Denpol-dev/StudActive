@@ -34,11 +34,11 @@ namespace StudActive.Views.Pages
             account = accountModel;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             //Личный кабинет
             UserNamePersonalArea.Text = account.LastName + " " + account.FirstName + " " + account.MiddleName;
-            StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
+            var userInfo = await StudentsViewModel.GetStudentActive(account.Id);
             PhoneNumberPersonalArea.Text = userInfo.MobilePhone;
             RolePersonalArea.Text = userInfo.Role;
             VKLink.NavigateUri = new Uri(userInfo.VkLink);
@@ -64,11 +64,12 @@ namespace StudActive.Views.Pages
 
             ChangePasswordStack.Visibility = Visibility.Collapsed;
         }
-        private void ChangePass_Click(object sender, RoutedEventArgs e)
+        private async void ChangePass_Click(object sender, RoutedEventArgs e)
         {
             if (NewPasswordChange.Password == NewRepeatPasswordChange.Password)
             {
-                bool result = studentsViewModel.ChangePass(NewPasswordChange.Password, account.Id);
+                var student = new StudentsViewModel();
+                bool result = await student.ChangePass(NewPasswordChange.Password, account.Id);
 
                 if (result)
                 {

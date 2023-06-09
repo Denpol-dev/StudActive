@@ -29,7 +29,7 @@
             </StackPanel>
         </Grid>
         <Grid x:Name="MainGrid" Margin="75,35,0,0">
-            <Grid x:Name="PersonalArea" Visibility="Visible">
+            <Grid x:Name="PersonalArea" Visibility="Collapsed">
                 <StackPanel VerticalAlignment="Top" x:Name="PersonalAreaStack">
                     <TextBlock Text="Личный кабинет" FontSize="40" FontFamily="Comfortaa" Margin="0,5,0,10" FontWeight="Bold"/>
                     <StackPanel Margin="10" OpacityMask="Black">
@@ -94,8 +94,8 @@
                     <Button x:Name="ChangePass" Content="Изменить пароль" Margin="10" Click="ChangePass_Click"/>
                 </StackPanel>
             </Grid>
-            <Grid x:Name="StudentsGrid" Visibility="Collapsed">
-                <StackPanel x:Name="StudActiveGridPanel" VerticalAlignment="Top" Visibility="Visible">
+            <Grid x:Name="StudentsGrid" Visibility="Visible">
+                <StackPanel x:Name="StudActiveGridPanel" VerticalAlignment="Top" Visibility="Collapsed">
                     <TextBlock Text="Члены студсовета" FontSize="40" FontFamily="Comfortaa" Margin="0,5,0,10" FontWeight="Bold"/>
                     <TextBlock Text="Список студентов, состоящих в студенческом совете" FontSize="25" FontFamily="Comfortaa" Margin="0,5,0,10"/>
                     <TextBlock Text="Кликните дважды по нужному студенту для получения подробной информации." FontSize="14" FontStyle="Normal" FontFamily="Comfortaa" Margin="0,5,0,10"/>
@@ -139,7 +139,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>
-                <Grid x:Name="ChangeStudentActive" VerticalAlignment="Top" Visibility="Collapsed">
+                <Grid x:Name="ChangeStudentActive" VerticalAlignment="Top" Visibility="Visible">
                     <StackPanel>
                         <TextBlock x:Name="NameStudent" Text="NameStudent" FontSize="40" FontFamily="Comfortaa" Margin="5,5,0,10" FontWeight="Bold"/>
                         <StackPanel Orientation="Horizontal">
@@ -177,10 +177,10 @@
                             <TextBox Grid.Column="1" Grid.Row="1" FontSize="16" materialDesign:HintAssist.Hint="Имя" Margin="10" Cursor="Arrow" x:Name="FirstNameChange"/>
 
                             <TextBlock Grid.Column="0" Grid.Row="2" Text="Фамилия: " FontSize="16" Margin="10"/>
-                            <TextBox Grid.Column="1" Grid.Row="2" FontSize="16" Text="" materialDesign:HintAssist.Hint="Фамилия" Margin="10" x:Name="MiddleNameChange"/>
+                            <TextBox Grid.Column="1" Grid.Row="2" FontSize="16" Text="" materialDesign:HintAssist.Hint="Фамилия" Margin="10" x:Name="LastNameChange"/>
 
                             <TextBlock Grid.Column="0" Grid.Row="3" Text="Отчество: " FontSize="16"  Margin="10"/>
-                            <TextBox Grid.Column="1" Grid.Row="3" FontSize="16" Text="" materialDesign:HintAssist.Hint="Отчество" Margin="10" x:Name="LastNameChange"/>
+                            <TextBox Grid.Column="1" Grid.Row="3" FontSize="16" Text="" materialDesign:HintAssist.Hint="Отчество" Margin="10" x:Name="MiddleNameChange"/>
 
                             <TextBlock Grid.Column="0" Grid.Row="4" Text="Дата вступления: " FontSize="16" Margin="10"/>
                             <DatePicker x:Name="entryDatePickerChange" Grid.Column="1" Grid.Row="4" SelectedDate="{x:Static sys:DateTime.Now}" FontSize="16" Margin="10"/>

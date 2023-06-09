@@ -9,6 +9,241 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Вход" Height="450" Width="400" WindowState="Normal" WindowStyle="None" ResizeMode="NoResize">
+    <Window.Resources>
+        <Storyboard x:Key="Loader" RepeatBehavior="Forever">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse">
+                <EasingColorKeyFrame KeyTime="0"      Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.1"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:1.2"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.3"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.4"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.6"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.7"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.8"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.9"  Value="#DFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:2.0"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.6"  Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.2"  Value="#BFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:3.3"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.4"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.5"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.6"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.7"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.8"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.9"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:4.0"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:4.1"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:5.2"    Value="#00FF9800"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse1">
+                <EasingColorKeyFrame KeyTime="0"      Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.1"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:1.2"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.3"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.4"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.6"  Value="#5FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.7"  Value="#3FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.8"  Value="#1FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:2.6"  Value="#00FF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:3.4"  Value="#1FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.5"  Value="#3FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.6"  Value="#5FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.7"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.8"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.9"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:4.0"  Value="#DFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:4.1"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:5.2"    Value="#00FF9800"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse2">
+                <EasingColorKeyFrame KeyTime="0"      Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.1"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:1.2"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.3"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.4"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.6"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.7"  Value="#5FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.8"  Value="#3FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.9"  Value="#1FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:2.6"  Value="#00FF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:3.3"  Value="#1FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.4"  Value="#3FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.5"  Value="#5FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.6"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.7"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.8"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.9"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:4.0"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:4.1"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:5.2"    Value="#00FF9800"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse3">
+                <EasingColorKeyFrame KeyTime="0"      Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.1"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:1.2"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.3"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.4"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.6"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.7"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.8"  Value="#5FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.9"  Value="#3FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:2.0"  Value="#1FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.6"  Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.2"  Value="#1FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:3.3"  Value="#3FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.4"  Value="#5FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.5"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.6"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.7"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.8"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.9"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:4.0"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:4.1"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:5.2"    Value="#00FF9800"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse4">
+                <EasingColorKeyFrame KeyTime="0"      Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.1"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:1.2"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.3"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.4"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.6"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.7"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.8"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.9"  Value="#5FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:2.0"  Value="#3FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.6"  Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.2"  Value="#3FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:3.3"  Value="#5FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.4"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.5"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.6"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.7"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.8"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.9"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:4.0"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:4.1"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:5.2"    Value="#00FF9800"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse5">
+                <EasingColorKeyFrame KeyTime="0"      Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.1"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:1.2"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.3"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.4"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.6"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.7"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.8"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.9"  Value="#7FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:2.0"  Value="#5FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.6"  Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.2"  Value="#5FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:3.3"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.4"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.5"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.6"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.7"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.8"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.9"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:4.0"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:4.1"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:5.2"    Value="#00FF9800"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse6">
+                <EasingColorKeyFrame KeyTime="0"      Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.1"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:1.2"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.3"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.4"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.6"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.7"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.8"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.9"  Value="#9FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:2.0"  Value="#7FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.6"  Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.2"  Value="#7FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:3.3"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.4"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.5"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.6"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.7"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.8"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.9"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:4.0"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:4.1"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:5.2"    Value="#00FF9800"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse7">
+                <EasingColorKeyFrame KeyTime="0"      Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.1"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:1.2"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.3"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.4"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.6"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.7"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.8"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.9"  Value="#BFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:2.0"  Value="#9FFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.6"  Value="#00FF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.2"  Value="#9FFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:3.3"  Value="#BFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.4"  Value="#DFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.5"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.6"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.7"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.8"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:3.9"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:4.0"  Value="#FFFF9800"/>
+
+                <EasingColorKeyFrame KeyTime="0:0:4.1"  Value="#FFFF9800"/>
+                <EasingColorKeyFrame KeyTime="0:0:5.2"    Value="#00FF9800"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource Loader}"/>
+        </EventTrigger>
+    </Window.Triggers>
     <Grid>
         <Grid x:Name="TopBar" Height="35" VerticalAlignment="Top" Background="#979797" MouseLeftButtonDown="TopBar_MouseLeftButtonDown">
             <StackPanel x:Name="TopPanel" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
@@ -29,5 +264,20 @@
                 <Button x:Name="LoginButton" Content="Войти" Width="100" IsDefault="True" FontFamily="Comfortaa" Margin="5" Click="LoginButton_Click"/>
             </StackPanel>
         </Grid>
+
+        <StackPanel x:Name="RoundLoader" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00FFFFFF">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Ellipse x:Name="ellipse" Width="10" Height="10" Fill="#FFFF9800" Margin="45,25,45,65"/>
+                <Ellipse x:Name="ellipse1" Width="10" Height="10" Fill="#BFFF9800" Margin="60,30,30,60"/>
+                <Ellipse x:Name="ellipse2" Width="10" Height="10" Fill="#7FFF9800" Margin="66,45,24,45"/>
+                <Ellipse x:Name="ellipse3" Width="10" Height="10" Fill="#3FFF9800" Margin="60,60,30,30"/>
+                <Ellipse x:Name="ellipse4" Width="10" Height="10" Fill="#00FF9800" Margin="45,65,45,25"/>
+                <Ellipse x:Name="ellipse5" Width="10" Height="10" Fill="#00FF9800" Margin="30,60,60,30"/>
+                <Ellipse x:Name="ellipse6" Width="10" Height="10" Fill="#00FF9800" Margin="24,45,66,45"/>
+                <Ellipse x:Name="ellipse7" Width="10" Height="10" Fill="#00FF9800" Margin="30,30,60,60"/>
+                <TextBlock x:Name="tbPrecent" Text="0%" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="tbProcesse" Text="Загрузка..." VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+            </Grid>
+        </StackPanel>
     </Grid>
 </Window>

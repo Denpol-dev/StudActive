@@ -1,37 +1,37 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\StudActive.csproj": {}
+    "C:\\Users\\polur\\source\\repos\\StudActive\\StudActive\\StudActive.csproj": {}
   },
   "projects": {
-    "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\StudActive.csproj": {
+    "C:\\Users\\polur\\source\\repos\\StudActive\\StudActive\\StudActive.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\StudActive.csproj",
+        "projectUniqueName": "C:\\Users\\polur\\source\\repos\\StudActive\\StudActive\\StudActive.csproj",
         "projectName": "StudActive",
-        "projectPath": "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\StudActive.csproj",
-        "packagesPath": "E:\\Users\\polur\\.nuget\\packages\\",
-        "outputPath": "E:\\Users\\polur\\Desktop\\Курсач\\StudActive\\StudActive\\obj\\",
+        "projectPath": "C:\\Users\\polur\\source\\repos\\StudActive\\StudActive\\StudActive.csproj",
+        "packagesPath": "C:\\Users\\polur\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\polur\\source\\repos\\StudActive\\StudActive\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "E:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\",
-          "E:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "E:\\Users\\polur\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "E:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "E:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\polur\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net5.0-windows"
+          "net7.0-windows"
         ],
         "sources": {
-          "E:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net5.0-windows7.0": {
-            "targetAlias": "net5.0-windows",
+          "net7.0-windows7.0": {
+            "targetAlias": "net7.0-windows",
             "projectReferences": {}
           }
         },
@@ -42,8 +42,8 @@
         }
       },
       "frameworks": {
-        "net5.0-windows7.0": {
-          "targetAlias": "net5.0-windows",
+        "net7.0-windows7.0": {
+          "targetAlias": "net7.0-windows",
           "dependencies": {
             "MaterialDesignThemes": {
               "target": "Package",
@@ -51,13 +51,17 @@
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[7.0.5, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[7.0.5, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
             }
           },
           "imports": [
@@ -79,7 +83,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "E:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }

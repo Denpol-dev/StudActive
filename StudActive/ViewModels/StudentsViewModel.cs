@@ -9,6 +9,9 @@ using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Windows;
+using System.Net.Http;
+using StudActive.Services;
+using Newtonsoft.Json;
 
 namespace StudActive.ViewModels
 {
@@ -20,15 +23,15 @@ namespace StudActive.ViewModels
         public static async Task<List<StudentsActiveModel>> GetStudentsActiveIsNotArchive(Guid userId)
         {
             using var context = new Context();
-            List<StudentsActiveModel> result = new List<StudentsActiveModel>();
+            var result = new List<StudentsActiveModel>();
             var userStudent = context.Students.FirstOrDefault(x => x.UserId == userId);
-            Guid studentId = userStudent.StudentId;
+            var studentId = userStudent.StudentId;
 
-            List<StudentStudActive> allStudents = new();
-            List<StudentStudActive> studentActives = new();
-            List<Student> students = new();
-            List<Group> groups = new();
-            List<RoleStudActive> roles = new();
+            var allStudents = new List<StudentStudActive>();
+            var studentActives = new List<StudentStudActive>();
+            var students = new List<Student>();
+            var groups = new List<Group>();
+            var roles = new List<RoleStudActive>();
 
             await context.StudentStudActives.ForEachAsync(context => { allStudents.Add(context); });
             var studentLogin = allStudents.FirstOrDefault(x => x.StudentId == studentId);
@@ -82,7 +85,8 @@ namespace StudActive.ViewModels
                         VkLink = "https://vk.com/" + studActiv.VkLink,
                         GroupId = group.GroupId,
                         GroupName = group.Name + "-" + group.CourseNumber + group.Number,
-                        CouncilName = council.Name
+                        CouncilName = council.Name,
+                        StudentId = studActiv.StudentId
                     });
                 }
                 return result;
@@ -171,63 +175,30 @@ namespace StudActive.ViewModels
             }
         }
 
-        public StudentsActiveModel GetStudentActive(Guid userId)
+        public static async Task<StudentsActiveModel> GetStudentActive(Guid userId)
         {
-            using var context = new Context();
-            StudentsActiveModel result = new StudentsActiveModel();
-            var userStudents = context.Students.FirstOrDefault(x => x.UserId == userId);
-            Guid studentId = userStudents.StudentId;
+            var response = "";
+            var url = Connection.url + "studactive";
 
-            var groups = context.Groups.ToList();
-            var studActiv = context.StudentStudActives.FirstOrDefault(x => x.StudentId == studentId);
-            var students = context.Students.ToList();
-
-            if (studActiv != null)
+            using (var httpClient = new HttpClient())
             {
-                var student = students.FirstOrDefault(x => x.StudentId == studActiv.StudentId);
-                var groupId = student.GroupId;
-                var group = groups.FirstOrDefault(x => x.GroupId == groupId);
+                var uri = new UriBuilder(url);
+                uri.Query = "userId=" + userId;
+                httpClient.DefaultRequestHeaders.Add("userid", App.userId.ToString());
 
-                string sex = student.Sex.ToString();
-
-                if (sex == "0")
-                    sex = "Ж";
-                else
-                    sex = "М";
-
-                Guid roleId = studActiv.RoleActive.GetValueOrDefault();
-                var role = context.RoleStudActives.FirstOrDefault(x => x.Id == roleId);
-                string roleName = role.Name;
-
-                if (roleName == "Member")
-                    roleName = "Рядовой";
-                else if (roleName == "Chairman")
-                    roleName = "Председатель";
-                else if (roleName == "ViceChairman")
-                    roleName = "Зам. председателя";
-
-                var council = context.StudentCouncils.FirstOrDefault(x => x.StudentCouncilId == studActiv.StudentCouncilId);
-
-                long phoneString = Convert.ToInt64(student.MobilePhoneNumber);
-                result = new StudentsActiveModel
+                try
                 {
-                    Id = studActiv.StudentId,
-                    Fio = student.LastName + " " + student.FirstName + " " + student.MiddleName,
-                    EntryDate = studActiv.EntryDate,
-                    LeavingDate = studActiv.LeavingDate,
-                    ReEntryDate = studActiv.ReEntryDate,
-                    IsArchive = studActiv.IsArchive,
-                    Role = roleName,
-                    Sex = sex,
-                    MobilePhone = string.Format("{0:+7 (###) ###-##-##}", phoneString),
-                    BirthDate = student.BirthDate,
-                    VkLink = "https://vk.com/" + studActiv.VkLink,
-                    GroupName = group.Name + "-" + group.CourseNumber + group.Number,
-                    CouncilName = council.Name
-                };
-                return result;
+                    var result = await httpClient.GetAsync(uri.Uri);
+                    result.EnsureSuccessStatusCode();
+                    response = await result.Content.ReadAsStringAsync();
+                }
+                catch (Exception ex)
+                {
+                    return new StudentsActiveModel();
+                }
             }
-            return null;
+
+            return JsonConvert.DeserializeObject<StudentsActiveModel>(response);
         }
 
         public string GetPass()
@@ -243,12 +214,11 @@ namespace StudActive.ViewModels
             return pass;
         }
 
-        public Tuple<string, byte[]> GetHashPass(string plainText)
+        public static Tuple<string, byte[]> GetHashPass(string plainText)
         {
-            byte[] salt;
-            Random random = new Random();
+            var random = new Random();
             int saltSize = random.Next(4, 8);
-            salt = new byte[saltSize];
+            var salt = new byte[saltSize];
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);
@@ -272,57 +242,65 @@ namespace StudActive.ViewModels
             return Tuple.Create(hastValue, salt);
         }
 
-        public bool ChangePass(string plainText, Guid id)
+        public async Task<bool> ChangePass(string plainText, Guid id)
         {
-            Tuple<string, byte[]> saltHash = GetHashPass(plainText);
-
-            using var context = new Context();
-            var authorizedUser = context.Users.Where(x => x.Id == id).FirstOrDefault();
-
-            string hashSalt = saltHash.Item1;
-            byte[] salt = saltHash.Item2;
-
-            authorizedUser.Hash = hashSalt;
-            authorizedUser.Salt = salt;
-
-            try
+            var response = "";
+            var url = Connection.url + "student/changepass";
+            var res = false;
+            
+            using (var httpClient = new HttpClient())
             {
-                context.SaveChanges();
-                return true;
+                var uri = new UriBuilder(url)
+                {
+                    Query = "plainText=" + plainText + "userId=" + id
+                };
+                httpClient.DefaultRequestHeaders.Add("userid", App.userId.ToString());
+                var st = JsonConvert.SerializeObject(this);
+                var re = new StringContent(JsonConvert.SerializeObject(this), Encoding.UTF8, "application/json");
+
+                try
+                {
+                    var result = await httpClient.PutAsync(uri.Uri, re);
+                    result.EnsureSuccessStatusCode();
+                    response = await result.Content.ReadAsStringAsync();
+                    res = true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
             }
-            catch
-            {
-                return false;
-            }
+
+            return res;
         }
 
         /// <summary>
         /// Генерация хэшей для всех пользователей (СТАРОЕ!)
         /// </summary>
-        public bool CreateHashPass()
-        {
-            using var context = new Context();
-            var users = context.Users.Where(u => u.Hash == null);
+        //public bool CreateHashPass()
+        //{
+        //    using var context = new Context();
+        //    var users = context.Users.Where(u => u.Hash == null);
 
-            foreach(var user in users)
-            {
-                Tuple<string, byte[]> saltHash = GetHashPass(user.Password);
-                string hashSalt = saltHash.Item1;
-                byte[] salt = saltHash.Item2;
-                user.Hash= hashSalt;
-                user.Salt = salt;
-            }
+        //    foreach(var user in users)
+        //    {
+        //        Tuple<string, byte[]> saltHash = GetHashPass(user.Password);
+        //        string hashSalt = saltHash.Item1;
+        //        byte[] salt = saltHash.Item2;
+        //        user.Hash= hashSalt;
+        //        user.Salt = salt;
+        //    }
 
-            try
-            {
-                context.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //    try
+        //    {
+        //        context.SaveChanges();
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
         public List<StudentsModel> GetNonRegistratedStrudents()
         {
@@ -392,7 +370,7 @@ namespace StudActive.ViewModels
         public List<GroupsModel> GetAllGroups()
         {
             using var context = new Context();
-            List<GroupsModel> result = new List<GroupsModel>();
+            var result = new List<GroupsModel>();
             var groups = context.Groups.ToList();
 
             foreach (var group in groups)
@@ -410,7 +388,7 @@ namespace StudActive.ViewModels
         public List<RolesStudActiveModel> GetAllRolesStudActiveModel()
         {
             using var context = new Context();
-            List<RolesStudActiveModel> result = new List<RolesStudActiveModel>();
+            var result = new List<RolesStudActiveModel>();
             var roles = context.RoleStudActives.ToList();
 
             foreach (var role in roles)
@@ -432,10 +410,10 @@ namespace StudActive.ViewModels
         /// <returns></returns>
         public bool CreateAgainStudentActive(RegistrationStudActiveModel regModel)
         {
-            using Context context = new Context();
+            using var context = new Context();
             bool result = true;
-            StudentStudActive studAct = new();
-            Student stud = new();
+            var studAct = new StudentStudActive();
+            var stud = new Student();
             try
             {
                 //Заполняем добавление в таблицу StudentStudActives

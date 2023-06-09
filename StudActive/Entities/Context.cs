@@ -33,7 +33,7 @@ namespace StudActive.Entities
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DENPOL\\SQLEXPRESS;Database=StudActiveDB;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=217.28.223.127,17160;User Id=user_d3945;Password=9y$GC6d*sW?4;Database=db_556ff;Trust Server Certificate=true;");
             }
         }
 

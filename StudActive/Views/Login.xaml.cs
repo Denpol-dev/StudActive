@@ -42,41 +42,58 @@ namespace StudActive
             WindowState = WindowState.Minimized;
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            LoginModel model = new LoginModel();
+            var model = new LoginModel();
 
             if (LoginText.Text != null && Password.Password != null)
             {
-                BlurEffect myEffect = new BlurEffect();
+                RoundLoader.Visibility = Visibility.Visible;
+                var myEffect = new BlurEffect();
                 myEffect.Radius = 10;
                 MainGrid.Effect = myEffect;
                 model.UserName = LoginText.Text;
                 model.Password = Password.Password;
-                AccountModel account = _accountViewModels.LoginHash(model);
+                var account = await _accountViewModels.LoginHash(model);
                 bool checkStudActive = _accountViewModels.CheckStudActive(model);
-                if (checkStudActive)
+                if (account != null)
                 {
-                    if ((account != null)/* && (account.Role == "Студент")*/)
+                    if (checkStudActive)
                     {
-                        myEffect.Radius = 0;
-                        MainGrid.Effect = myEffect;
-                        MainWindow m = new MainWindow(account);
-                        Hide();
-                        m.Show();
+                        if ((account.Id != Guid.Empty)/* && (account.Role == "Студент")*/)
+                        {
+                            RoundLoader.Visibility = Visibility.Collapsed;
+                            myEffect.Radius = 0;
+                            MainGrid.Effect = myEffect;
+                            var m = new MainWindow(account);
+                            Hide();
+                            m.Show();
+                        }
+                        else
+                        {
+                            RoundLoader.Visibility = Visibility.Collapsed;
+                            myEffect.Radius = 0;
+                            MainGrid.Effect = myEffect;
+                            ErrorLabel.Text = "Неверный логин или пароль";
+                            Password.Password = "";
+                        }
                     }
                     else
                     {
+                        RoundLoader.Visibility = Visibility.Collapsed;
                         myEffect.Radius = 0;
                         MainGrid.Effect = myEffect;
-                        ErrorLabel.Text = "Неверный логин или пароль";
+                        ErrorLabel.Text = "Вас нет ни в одном списке студенческих советов. Обратитесь к председателю.";
+                        Password.Password = "";
                     }
                 }
                 else
                 {
+                    RoundLoader.Visibility = Visibility.Collapsed;
                     myEffect.Radius = 0;
                     MainGrid.Effect = myEffect;
-                    ErrorLabel.Text = "Вас нет ни в одном списке студенческих советов. Обратитесь к председателю.";
+                    ErrorLabel.Text = "Нет доступа к базе данных, проверьте подключение к интернету.";
+                    Password.Password = "";
                 }
             }
         }

@@ -6,81 +6,71 @@ using System.Text;
 using System.Threading.Tasks;
 using StudActive.Entities;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Net.Http;
+using StudActive.Services;
 
 namespace StudActive.ViewModels
 {
     public class AccountViewModel
     {
-        public AccountModel Login(LoginModel model)
+        public async Task<AccountModel> LoginHash(LoginModel model)
         {
-            using Context context = new();
-            AccountModel account = new AccountModel();
-            var user = context?.Users.FirstOrDefault(x => x.UserName == model.UserName);
+            var response = "";
+            var url = Connection.url + "user/login";
+            var res = false;
 
-            if (user.Password == model.Password)
+            using (var httpClient = new HttpClient())
             {
-                var role = context.UserRoles.FirstOrDefault(x => x.UserRoleId == user.Role);
-                string roleName = role.Name;
-                account = new AccountModel
+                var uri = new UriBuilder(url);
+                HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, uri.ToString());
+                requestMessage.Headers.Add("username", model.UserName);
+                requestMessage.Content = new StringContent(JsonConvert.SerializeObject(model), null, "application/json");
+
+                try
                 {
-                    UserName = user.UserName,
-                    LastName = user.LastName,
-                    FirstName = user.FirstName,
-                    MiddleName = user.MiddleName,
-                    Role = roleName,
-                    Id = user.Id
-                };
-                return account;
-            }
-            return null;
-        }
-
-        public AccountModel LoginHash(LoginModel model)
-        {
-            using Context context = new();
-            AccountModel account = new AccountModel();
-
-            var user = context?.Users.FirstOrDefault(x => x.UserName == model.UserName);
-
-            string pass = HashPass(model.Password, user.Salt);
-
-            if (user.Hash == pass)
-            {
-                var role = context.UserRoles.FirstOrDefault(x => x.UserRoleId == user.Role);
-                string roleName = role.Name;
-                account = new AccountModel
+                    var result = await httpClient.SendAsync(requestMessage);
+                    result.EnsureSuccessStatusCode();
+                    response = await result.Content.ReadAsStringAsync();
+                }
+                catch (Exception ex)
                 {
-                    UserName = user.UserName,
-                    LastName = user.LastName,
-                    FirstName = user.FirstName,
-                    MiddleName = user.MiddleName,
-                    Role = roleName,
-                    Id = user.Id
-                };
-                return account;
+                    return new AccountModel();
+                }
             }
-            return null;
+
+            var account = JsonConvert.DeserializeObject<AccountModel>(response);
+            return account;
+
         }
 
         public bool CheckStudActive(LoginModel model)
         {
-            using Context context = new();
-            AccountModel account = new AccountModel();
-            var user = context?.Users.FirstOrDefault(x => x.UserName == model.UserName);
+            try
+            {
+                using Context context = new();
+                var account = new AccountModel();
+                var user = context?.Users.FirstOrDefault(x => x.UserName == model.UserName);
 
-            StudentsActiveModel studActives = new StudentsActiveModel();
-            StudentsModel students = new StudentsModel();
+                var studActives = new StudentsActiveModel();
+                var students = new StudentsModel();
 
-            var student = context.Students.FirstOrDefault(x => x.UserId == user.Id);
-            var studActive = context.StudentStudActives.FirstOrDefault(x => x.StudentId == student.StudentId);
+                var student = context.Students.FirstOrDefault(x => x.UserId == user.Id);
+                var studActive = context.StudentStudActives.FirstOrDefault(x => x.StudentId == student.StudentId);
 
-            bool result = studActive != null ? true : false;
-            return result;
+                bool result = studActive != null;
+                return result;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public string HashPass(string text, byte[] salt)
         {
-            HashAlgorithm hash = new SHA256Managed();
+            var hash = new SHA256Managed();
 
             byte[] saltBytes = salt;
             byte[] textBytes = Encoding.UTF8.GetBytes(text);

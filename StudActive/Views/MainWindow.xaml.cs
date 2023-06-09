@@ -28,10 +28,10 @@ namespace StudActive.Views
         StudentsActiveModel selectedStudActive = new();
         DutyListModel SelectedDutyList = new();
 
-        BlurEffect myEffect = new BlurEffect();
-        StudentsViewModel studentsViewModel = new StudentsViewModel();
-        DutyListViewModel dutyListViewModel = new DutyListViewModel();
-        AccountModel account = new AccountModel();
+        BlurEffect myEffect = new();
+        StudentsViewModel studentsViewModel = new();
+        DutyListViewModel dutyListViewModel = new();
+        AccountModel account = new();
 
         public MainWindow()
         {
@@ -55,6 +55,7 @@ namespace StudActive.Views
         public MainWindow(AccountModel accountModel) : this()
         {
             account = accountModel;
+            App.userId = account.Id;
         }
 
         #region Загрузка окна
@@ -63,7 +64,7 @@ namespace StudActive.Views
         /// </summary>
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
+            var userInfo = await StudentsViewModel.GetStudentActive(account.Id);
             if (account.Role == "Студент")
             {
                 string[] Role = { "Председатель", "Зам. председателя" };
@@ -282,11 +283,12 @@ namespace StudActive.Views
 
             if (StudActivesDataGrid.SelectedItem is not null)
             {
-                DataGridRow row = (DataGridRow)sender;
+                var row = (DataGridRow)sender;
                 if (row.DataContext is not StudentsActiveModel context) return;
                 Guid groupId = context.GroupId;
                 Guid roleId = context.RoleId;
-                StudentIdTextChange.Text = context.Id.ToString();
+                StudentActiveIdTextChange.Text = context.Id.ToString();
+                StudentIdTextChange.Text = context.StudentId.ToString();
 
                 NameStudent.Text = context.Fio;
                 string[] fio = context.Fio.Split();
@@ -371,19 +373,19 @@ namespace StudActive.Views
             StudActiveGridPanel.Visibility = Visibility.Visible;
         }
 
-        private void Registration_Click(object sender, RoutedEventArgs e)
+        private async void Registration_Click(object sender, RoutedEventArgs e)
         {
             if (FirstName.Text != "" || MiddleName.Text != "" || LastName.Text != "") 
             {
                 if(cbGroupName.SelectedItem != null)
                 {
-                    StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
-                    RolesStudActiveModel cbRoleActiveSelected = (RolesStudActiveModel)cbRoleActive.SelectedItem;
-                    Guid roleActive = cbRoleActiveSelected != null ? cbRoleActiveSelected.RoleId : Guid.Parse("356DC01F-165E-452B-BB91-BF0E0D536564");
-                    GroupsModel cbGroupNameSelected = (GroupsModel)cbGroupName.SelectedItem;
-                    Guid groupId = cbGroupNameSelected.GroupId;
-                    Guid? studentCouncilId = studentsViewModel.GetStudentCouncilId(userInfo.Id);
-                    Guid studActiveId = StudentIdText.Text != "" ? new Guid(StudentIdText.Text) : Guid.Empty;
+                    var userInfo = await StudentsViewModel.GetStudentActive(account.Id);
+                    var cbRoleActiveSelected = (RolesStudActiveModel)cbRoleActive.SelectedItem;
+                    var roleActive = cbRoleActiveSelected != null ? cbRoleActiveSelected.RoleId : Guid.Parse("356DC01F-165E-452B-BB91-BF0E0D536564");
+                    var cbGroupNameSelected = (GroupsModel)cbGroupName.SelectedItem;
+                    var groupId = cbGroupNameSelected.GroupId;
+                    var studentCouncilId = studentsViewModel.GetStudentCouncilId(userInfo.Id);
+                    var studActiveId = StudentIdText.Text != "" ? new Guid(StudentIdText.Text) : Guid.Empty;
 
                     RegistrationStudActiveModel regModel = new RegistrationStudActiveModel
                     {
@@ -419,48 +421,48 @@ namespace StudActive.Views
             }
         }
 
-        private void ChangeStudActive_Click(object sender, RoutedEventArgs e)
+        private async void ChangeStudActive_Click(object sender, RoutedEventArgs e)
         {
             if (FirstNameChange.Text != "" || MiddleNameChange.Text != "" || LastNameChange.Text != "")
             {
                 if (cbGroupNameChange.SelectedItem != null)
                 {
-                    StudentsActiveModel userInfo = studentsViewModel.GetStudentActive(account.Id);
-                    RolesStudActiveModel cbRoleActiveSelected = (RolesStudActiveModel)cbRoleActiveChange.SelectedItem;
-                    Guid roleActive = cbRoleActiveSelected != null ? cbRoleActiveSelected.RoleId : Guid.Parse("356DC01F-165E-452B-BB91-BF0E0D536564");
-                    GroupsModel cbGroupNameSelected = (GroupsModel)cbGroupNameChange.SelectedItem;
-                    Guid groupId = cbGroupNameSelected.GroupId;
-                    Guid? studentCouncilId = studentsViewModel.GetStudentCouncilId(userInfo.Id);
-                    Guid studActiveId = StudentActiveIdTextChange.Text != "" ? Guid.Parse(StudentActiveIdTextChange.Text) : Guid.Empty;
+                    var userInfo = await StudentsViewModel.GetStudentActive(account.Id);
+                    var cbRoleActiveSelected = (RolesStudActiveModel)cbRoleActiveChange.SelectedItem;
+                    var roleActive = cbRoleActiveSelected != null ? cbRoleActiveSelected.RoleId : Guid.Parse("356DC01F-165E-452B-BB91-BF0E0D536564");
+                    var cbGroupNameSelected = (GroupsModel)cbGroupNameChange.SelectedItem;
+                    var groupId = cbGroupNameSelected.GroupId;
+                    var studentCouncilId = studentsViewModel.GetStudentCouncilId(userInfo.Id);
 
-                    RegistrationStudActiveModel regModel = new RegistrationStudActiveModel
+                    var regModel = new RegistrationStudActiveModel
                     {
                         FirstName = FirstNameChange.Text,
                         MiddleName = MiddleNameChange.Text,
                         LastName = LastNameChange.Text,
-                        StudActiveId = Guid.Parse(StudentIdTextChange.Text),
+                        StudActiveId = Guid.Parse(StudentActiveIdTextChange.Text),
                         EntryDate = entryDatePickerChange.SelectedDate,
                         IsArchive = false,
                         RoleActive = roleActive,
-                        VkLink = VkLink.Text,
-                        StudentId = studActiveId,
+                        VkLink = VkLinkChange.Text,
+                        StudentId = Guid.Parse(StudentIdTextChange.Text),
                         StudentCouncilId = studentCouncilId.Value,
                         GroupId = groupId,
+                        MobilePhoneNumber = PhoneNumberChange.Text,
                         Sex = cbSexChange.SelectedIndex
                     };
 
-                    bool res = regModel.StudentId != Guid.Empty ? studentsViewModel.CreateAgainStudentActive(regModel) : studentsViewModel.CreateFullNewStudentActive(regModel);//Проверка на то, есть уже этот студент в системе, или нет
+                    var res = await regModel.ChangeStudentActive();
 
                     if (res)
                     {
                         StudentIdText.Text = null;
                         CreateStudActiveStack.Visibility = Visibility.Collapsed;
                         StudActiveGridPanel.Visibility = Visibility.Visible;
-                        MessageBox.Show("Регистрация успешна.");
+                        MessageBox.Show("Изменение успешно.");
                     }
                     else
                     {
-                        MessageBox.Show("Регистрация не удалась.", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Изменение не удалось.", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                     UpdateStudActiveDataGrid();
                 }
@@ -554,11 +556,12 @@ namespace StudActive.Views
 
             ChangePasswordStack.Visibility = Visibility.Collapsed;
         }
-        private void ChangePass_Click(object sender, RoutedEventArgs e)
+        private async void ChangePass_Click(object sender, RoutedEventArgs e)
         {
             if (NewPasswordChange.Password == NewRepeatPasswordChange.Password)
             {
-                bool result = studentsViewModel.ChangePass(NewPasswordChange.Password, account.Id);
+                var student = new StudentsViewModel();
+                bool result = await student.ChangePass(NewPasswordChange.Password, account.Id);
 
                 if (result)
                 {
